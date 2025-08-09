@@ -268,6 +268,26 @@ export const LeadDB = {
   },
 
   create: async (lead: any) => {
+    if (!isConnected) {
+      // Mock data fallback
+      const newLead = {
+        id: lead.id,
+        phone: lead.phone,
+        source: lead.source,
+        name: lead.name || null,
+        email: lead.email || null,
+        company: lead.company || null,
+        message: lead.message || null,
+        status: lead.status || 'new',
+        priority: lead.priority || 'medium',
+        created_at: lead.createdAt,
+        updated_at: lead.updatedAt,
+        tags: JSON.stringify(lead.tags || [])
+      };
+      mockLeads.push(newLead);
+      return newLead;
+    }
+
     await db.execute(`
       INSERT INTO leads (id, phone, source, name, email, company, message, status, priority, created_at, updated_at, tags)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -285,7 +305,7 @@ export const LeadDB = {
       lead.updatedAt,
       JSON.stringify(lead.tags || [])
     ]);
-    
+
     const [result] = await db.execute('SELECT * FROM leads WHERE id = ?', [lead.id]);
     return (result as any[])[0];
   },
