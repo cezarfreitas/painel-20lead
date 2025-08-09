@@ -4,6 +4,7 @@ import {
   CreateWebhookRequest,
   GetWebhooksResponse,
   WebhookResponse,
+  WebhookField,
 } from "@shared/webhooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
