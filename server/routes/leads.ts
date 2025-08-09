@@ -88,11 +88,15 @@ export const createLead: RequestHandler = async (req, res) => {
   try {
     const leadData = req.body as CreateLeadRequest;
 
-    // Validate required fields
-    if (!leadData.phone || !leadData.source) {
+    // Map incoming fields to standard format
+    const whatsapp = leadData.whatsapp || leadData.phone;
+    const source = leadData.source || leadData.origem || "website";
+
+    // Validate required fields - only whatsapp is required
+    if (!whatsapp) {
       const response: CreateLeadResponse = {
         success: false,
-        error: "WhatsApp e origem são obrigatórios",
+        error: "WhatsApp é obrigatório",
       };
       return res.status(400).json(response);
     }
@@ -103,7 +107,9 @@ export const createLead: RequestHandler = async (req, res) => {
     // Extract custom data from request body
     const {
       phone,
-      source,
+      whatsapp: inputWhatsapp,
+      source: inputSource,
+      origem,
       name,
       email,
       company,
