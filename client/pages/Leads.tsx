@@ -230,7 +230,7 @@ export default function Leads() {
                 <TableBody>
                   {leads.map((lead) => (
                     <TableRow key={lead.id}>
-                      <TableCell>
+                      <TableCell className="w-[250px]">
                         <div>
                           <div className="font-medium">{lead.name}</div>
                           {lead.message && (
@@ -240,12 +240,12 @@ export default function Leads() {
                           )}
                         </div>
                       </TableCell>
-                      
-                      <TableCell>
+
+                      <TableCell className="w-[200px]">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 text-sm">
                             <Mail className="h-3 w-3" />
-                            {lead.email}
+                            <span className="truncate">{lead.email}</span>
                           </div>
                           {lead.phone && (
                             <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -255,35 +255,29 @@ export default function Leads() {
                           )}
                         </div>
                       </TableCell>
-                      
-                      <TableCell>
+
+                      <TableCell className="w-[150px]">
                         {lead.company && (
                           <div className="flex items-center gap-2">
                             <Building className="h-3 w-3" />
-                            {lead.company}
+                            <span className="truncate">{lead.company}</span>
                           </div>
                         )}
                       </TableCell>
-                      
-                      <TableCell>
+
+                      <TableCell className="w-[120px]">
                         <Badge variant="outline" className="text-xs">
                           {lead.source}
                         </Badge>
                       </TableCell>
-                      
-                      <TableCell>
+
+                      <TableCell className="w-[140px]">
                         <Select
                           value={lead.status}
                           onValueChange={(value) => updateLeadStatus(lead.id, value as Lead["status"])}
                         >
-                          <SelectTrigger className="w-[140px] h-9">
-                            <SelectValue placeholder="Status">
-                              {lead.status === "new" && "Novo"}
-                              {lead.status === "contacted" && "Contatado"}
-                              {lead.status === "qualified" && "Qualificado"}
-                              {lead.status === "converted" && "Convertido"}
-                              {lead.status === "lost" && "Perdido"}
-                            </SelectValue>
+                          <SelectTrigger className="w-full h-8">
+                            <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="new">Novo</SelectItem>
@@ -295,17 +289,13 @@ export default function Leads() {
                         </Select>
                       </TableCell>
 
-                      <TableCell>
+                      <TableCell className="w-[120px]">
                         <Select
                           value={lead.priority}
                           onValueChange={(value) => updateLeadPriority(lead.id, value as Lead["priority"])}
                         >
-                          <SelectTrigger className="w-[110px] h-9">
-                            <SelectValue placeholder="Prioridade">
-                              {lead.priority === "low" && "Baixa"}
-                              {lead.priority === "medium" && "Média"}
-                              {lead.priority === "high" && "Alta"}
-                            </SelectValue>
+                          <SelectTrigger className="w-full h-8">
+                            <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="low">Baixa</SelectItem>
@@ -314,15 +304,15 @@ export default function Leads() {
                           </SelectContent>
                         </Select>
                       </TableCell>
-                      
-                      <TableCell>
+
+                      <TableCell className="w-[140px]">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Calendar className="h-3 w-3" />
-                          {formatDate(lead.createdAt)}
+                          <span className="text-xs">{formatDate(lead.createdAt)}</span>
                         </div>
                       </TableCell>
-                      
-                      <TableCell>
+
+                      <TableCell className="w-[50px]">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="sm">
