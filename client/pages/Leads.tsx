@@ -238,22 +238,6 @@ export default function Leads() {
                         </Badge>
                       </TableCell>
 
-                      <TableCell className="w-[120px]">
-                        <Select
-                          value={lead.priority}
-                          onValueChange={(value) => updateLeadPriority(lead.id, value as Lead["priority"])}
-                        >
-                          <SelectTrigger className="w-full h-8">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="low">Baixa</SelectItem>
-                            <SelectItem value="medium">Média</SelectItem>
-                            <SelectItem value="high">Alta</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-
                       <TableCell className="w-[140px]">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Calendar className="h-3 w-3" />
