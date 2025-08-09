@@ -31,7 +31,7 @@ const navigation = [
   {
     name: "Pixels",
     href: "/tracking",
-    icon: FileText
+    icon: Code
   },
   {
     name: "Relatórios",
