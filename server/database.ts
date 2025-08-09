@@ -311,22 +311,42 @@ export const LeadDB = {
   },
 
   getById: async (id: string) => {
+    if (!isConnected) {
+      return mockLeads.find(lead => lead.id === id);
+    }
     const [result] = await db.execute('SELECT * FROM leads WHERE id = ?', [id]);
     return (result as any[])[0];
   },
 
   update: async (id: string, updates: any) => {
+    if (!isConnected) {
+      const leadIndex = mockLeads.findIndex(lead => lead.id === id);
+      if (leadIndex !== -1) {
+        mockLeads[leadIndex] = { ...mockLeads[leadIndex], ...updates, updated_at: new Date().toISOString() };
+        return mockLeads[leadIndex];
+      }
+      return null;
+    }
+
     const fields = Object.keys(updates).map(key => `${key} = ?`).join(', ');
     const values = Object.values(updates);
     values.push(new Date().toISOString(), id);
-    
+
     await db.execute(`UPDATE leads SET ${fields}, updated_at = ? WHERE id = ?`, values);
-    
+
     const [result] = await db.execute('SELECT * FROM leads WHERE id = ?', [id]);
     return (result as any[])[0];
   },
 
   delete: async (id: string) => {
+    if (!isConnected) {
+      const leadIndex = mockLeads.findIndex(lead => lead.id === id);
+      if (leadIndex !== -1) {
+        mockLeads.splice(leadIndex, 1);
+        return { affectedRows: 1 };
+      }
+      return { affectedRows: 0 };
+    }
     return await db.execute('DELETE FROM leads WHERE id = ?', [id]);
   }
 };
