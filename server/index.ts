@@ -39,6 +39,7 @@ export function createServer() {
   app.post("/api/leads", createLead);
   app.put("/api/leads/:id", updateLead);
   app.delete("/api/leads/:id", deleteLead);
+  app.post("/api/leads/:id/resend-webhook", resendWebhookForLead);
 
   // Dashboard routes
   app.get("/api/dashboard/stats", getDashboardStats);
