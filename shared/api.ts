@@ -34,8 +34,8 @@ export interface Lead {
  */
 export interface CreateLeadRequest {
   name: string;
-  email: string;
-  phone?: string;
+  phone: string; // WhatsApp obrigatório
+  email?: string; // Email opcional
   company?: string;
   message?: string;
   source: string;
