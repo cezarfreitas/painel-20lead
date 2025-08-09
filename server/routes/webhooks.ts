@@ -215,7 +215,9 @@ export const deleteWebhook: RequestHandler = async (req, res) => {
  * Function to trigger webhooks when a lead is created
  */
 export const triggerWebhooks = async (lead: Lead): Promise<void> => {
+  console.log(`[WEBHOOK] Starting webhook trigger for lead ${lead.id}`);
   const dbWebhooks = await WebhookDB.getActive();
+  console.log(`[WEBHOOK] Found ${dbWebhooks.length} active webhooks in database`);
 
   if (dbWebhooks.length === 0) {
     console.log("No active webhooks to trigger");
