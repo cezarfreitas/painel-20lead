@@ -144,7 +144,6 @@ Campos opcionais:
   <input type="hidden" name="source" value="${pixelCode}">
   <input type="text" name="name" placeholder="Nome" required>
   <input type="tel" name="phone" placeholder="WhatsApp" required>
-  <input type="email" name="email" placeholder="Email">
   <input type="text" name="company" placeholder="Empresa">
   <textarea name="message" placeholder="Mensagem"></textarea>
   <button type="submit">Enviar Lead</button>
@@ -155,8 +154,7 @@ Campos opcionais:
 function enviarLead() {
   var dadosLead = {
     name: "João Silva",
-    phone: "+55 11 99999-9999",
-    email: "joao@email.com", // opcional
+    phone: "+55 11 99999-9999", // obrigatório
     company: "Empresa ABC", // opcional
     message: "Quero saber mais", // opcional
     source: "${pixelCode}"
