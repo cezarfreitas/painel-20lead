@@ -402,7 +402,10 @@ export const LeadDB = {
   },
 
   create: async (lead: any) => {
+    console.log("🗄️ [DB] Creating lead with data:", lead);
+
     if (!isConnected) {
+      console.log("🗄️ [DB] Using mock mode");
       // Mock data fallback
       const newLead = {
         id: lead.id,
@@ -423,27 +426,42 @@ export const LeadDB = {
       return newLead;
     }
 
-    await db.execute(
-      `
-      INSERT INTO leads (id, phone, source, name, email, company, message, status, priority, created_at, updated_at, tags, custom_data)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `,
-      [
-        lead.id,
-        lead.phone,
-        lead.source,
-        lead.name || null,
-        lead.email || null,
-        lead.company || null,
-        lead.message || null,
-        lead.status || "new",
-        lead.priority || "medium",
-        new Date(lead.createdAt),
-        new Date(lead.updatedAt),
-        JSON.stringify(lead.tags || []),
-        JSON.stringify(lead.customData || {}),
-      ],
-    );
+    try {
+      console.log("🗄️ [DB] Using MySQL database");
+
+      // Ensure dates are proper Date objects
+      const createdAt = new Date(lead.createdAt);
+      const updatedAt = new Date(lead.updatedAt);
+
+      console.log("🗄️ [DB] Processed dates:", { createdAt, updatedAt });
+
+      await db.execute(
+        `
+        INSERT INTO leads (id, phone, source, name, email, company, message, status, priority, created_at, updated_at, tags, custom_data)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+        [
+          lead.id,
+          lead.phone,
+          lead.source,
+          lead.name || null,
+          lead.email || null,
+          lead.company || null,
+          lead.message || null,
+          lead.status || "new",
+          lead.priority || "medium",
+          createdAt,
+          updatedAt,
+          JSON.stringify(lead.tags || []),
+          JSON.stringify(lead.customData || {}),
+        ],
+      );
+
+      console.log("🗄️ [DB] INSERT successful");
+    } catch (error) {
+      console.error("🗄️ [DB] INSERT error:", error);
+      throw error;
+    }
 
     const [result] = await db.execute("SELECT * FROM leads WHERE id = ?", [
       lead.id,
