@@ -288,7 +288,7 @@ const triggerSingleWebhook = async (
     
     if (response.ok) {
       // Success
-      WebhookDB.incrementSuccess(webhook.id);
+      await WebhookDB.incrementSuccess(webhook.id);
 
       const log: WebhookLog = {
         id: logId,
@@ -303,7 +303,7 @@ const triggerSingleWebhook = async (
         createdAt: new Date().toISOString()
       };
 
-      WebhookLogDB.create(log);
+      await WebhookLogDB.create(log);
 
       console.log(`Webhook ${webhook.id} triggered successfully`);
     } else {
