@@ -127,10 +127,10 @@ export const updateWebhook: RequestHandler = (req, res) => {
   try {
     const webhookId = req.params.id;
     const updates = req.body as UpdateWebhookRequest;
-    
-    const webhookIndex = webhooks.findIndex(webhook => webhook.id === webhookId);
-    
-    if (webhookIndex === -1) {
+
+    const existingWebhook = WebhookDB.getById(webhookId);
+
+    if (!existingWebhook) {
       const response: WebhookResponse = {
         success: false,
         error: "Webhook não encontrado"
@@ -150,21 +150,28 @@ export const updateWebhook: RequestHandler = (req, res) => {
         return res.status(400).json(response);
       }
     }
-    
+
     // Update webhook
-    const updatedWebhook = {
-      ...webhooks[webhookIndex],
-      ...updates,
-      updatedAt: new Date().toISOString()
+    const dbWebhook = WebhookDB.update(webhookId, updates);
+
+    // Convert to API format
+    const updatedWebhook: Webhook = {
+      id: dbWebhook.id,
+      name: dbWebhook.name,
+      url: dbWebhook.url,
+      isActive: dbWebhook.is_active === 1,
+      createdAt: dbWebhook.created_at,
+      updatedAt: dbWebhook.updated_at,
+      lastTriggered: dbWebhook.last_triggered,
+      successCount: dbWebhook.success_count,
+      failureCount: dbWebhook.failure_count
     };
-    
-    webhooks[webhookIndex] = updatedWebhook;
-    
+
     const response: WebhookResponse = {
       success: true,
       webhook: updatedWebhook
     };
-    
+
     res.json(response);
   } catch (error) {
     console.error("Error updating webhook:", error);
@@ -182,18 +189,18 @@ export const updateWebhook: RequestHandler = (req, res) => {
 export const deleteWebhook: RequestHandler = (req, res) => {
   try {
     const webhookId = req.params.id;
-    
-    const webhookIndex = webhooks.findIndex(webhook => webhook.id === webhookId);
-    
-    if (webhookIndex === -1) {
+
+    const existingWebhook = WebhookDB.getById(webhookId);
+
+    if (!existingWebhook) {
       return res.status(404).json({
         success: false,
         error: "Webhook não encontrado"
       });
     }
-    
-    webhooks.splice(webhookIndex, 1);
-    
+
+    WebhookDB.delete(webhookId);
+
     res.json({ success: true });
   } catch (error) {
     console.error("Error deleting webhook:", error);
