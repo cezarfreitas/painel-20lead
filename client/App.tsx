@@ -25,7 +25,6 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Layout><Index /></Layout>} />
           <Route path="/leads" element={<Layout><Leads /></Layout>} />
-          <Route path="/tracking" element={<Layout><Tracking /></Layout>} />
           <Route path="/webhooks" element={<Layout><Webhooks /></Layout>} />
           <Route path="/reports" element={<Layout><Reports /></Layout>} />
           <Route path="/settings" element={<Layout><Settings /></Layout>} />
