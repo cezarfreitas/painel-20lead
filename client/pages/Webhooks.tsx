@@ -52,9 +52,16 @@ import {
 
 export default function Webhooks() {
   const [webhooks, setWebhooks] = useState<Webhook[]>([]);
-  const [newWebhook, setNewWebhook] = useState({ name: "", url: "" });
+  const [newWebhook, setNewWebhook] = useState({
+    name: "",
+    url: "",
+    customFields: [] as WebhookField[],
+    sendFields: [] as string[]
+  });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [editingWebhook, setEditingWebhook] = useState<Webhook | null>(null);
+  const [isConfigDialogOpen, setIsConfigDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchWebhooks();
