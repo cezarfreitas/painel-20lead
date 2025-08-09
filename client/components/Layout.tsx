@@ -30,11 +30,6 @@ const navigation = [
     icon: Users
   },
   {
-    name: "Pixels",
-    href: "/tracking",
-    icon: Code
-  },
-  {
     name: "Webhooks",
     href: "/webhooks",
     icon: Webhook
