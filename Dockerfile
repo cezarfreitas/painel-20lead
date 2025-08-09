@@ -1,9 +1,11 @@
-# Multi-stage build for LeadHub
+# LeadHub Production Dockerfile
+FROM node:18-alpine
 
-# Build stage
-FROM node:18-alpine AS builder
-
+# Set working directory
 WORKDIR /app
+
+# Install system dependencies
+RUN apk add --no-cache dumb-init curl
 
 # Copy package files
 COPY package*.json ./
@@ -17,26 +19,15 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Production stage
-FROM node:18-alpine AS production
-
-WORKDIR /app
-
-# Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
-
 # Create non-root user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S leadhub -u 1001
+RUN addgroup -g 1001 -S appuser && \
+    adduser -S -u 1001 -G appuser appuser
 
-# Copy built application from builder stage
-COPY --from=builder --chown=leadhub:nodejs /app/dist ./dist
-COPY --from=builder --chown=leadhub:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=leadhub:nodejs /app/package*.json ./
+# Change ownership
+RUN chown -R appuser:appuser /app
 
-# Copy server files
-COPY --chown=leadhub:nodejs server ./server
-COPY --chown=leadhub:nodejs shared ./shared
+# Switch to non-root user
+USER appuser
 
 # Set environment variables
 ENV NODE_ENV=production
@@ -45,12 +36,9 @@ ENV PORT=80
 # Expose port
 EXPOSE 80
 
-# Switch to non-root user
-USER leadhub
-
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node --input-type=module --eval="import('http').then(h => h.get('http://localhost:80/api/health', r => r.statusCode === 200 ? process.exit(0) : process.exit(1)).on('error', () => process.exit(1)))"
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD curl -f http://localhost:80/api/health || exit 1
 
 # Start the application
 ENTRYPOINT ["dumb-init", "--"]
