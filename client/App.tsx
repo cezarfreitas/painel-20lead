@@ -10,6 +10,7 @@ import Layout from "./components/Layout";
 import Index from "./pages/Index";
 import Leads from "./pages/Leads";
 import Tracking from "./pages/Tracking";
+import Webhooks from "./pages/Webhooks";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
