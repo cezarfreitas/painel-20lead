@@ -51,7 +51,7 @@ export const getWebhooks: RequestHandler = async (req, res) => {
 /**
  * POST /api/webhooks - Create a new webhook
  */
-export const createWebhook: RequestHandler = (req, res) => {
+export const createWebhook: RequestHandler = async (req, res) => {
   try {
     const webhookData = req.body as CreateWebhookRequest;
 
