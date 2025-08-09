@@ -1,51 +1,16 @@
-# Dependencies
+# Node modules
 node_modules
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Logs
-logs
-*.log
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage
-
-# nyc test coverage
-.nyc_output
-
-# Dependency directories
-node_modules/
-jspm_packages/
-
-# Optional npm cache directory
 .npm
 
-# Optional REPL history
-.node_repl_history
+# Build output
+dist
+build
+.next
 
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# dotenv environment variables file
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# parcel-bundler cache (https://parceljs.org/)
-.cache
-.parcel-cache
+# Environment files
+.env*
+!.env.example
 
 # IDE
 .vscode
@@ -59,29 +24,28 @@ Thumbs.db
 
 # Database
 *.db
-*.sqlite
-*.sqlite3
-leadhub.db
-
-# Build artifacts that shouldn't be in container
-dist
-build
-.next
-.vite
+*.sqlite*
 
 # Git
 .git
 .gitignore
 
 # Docker
-Dockerfile
-.dockerignore
 docker-compose*.yml
+Dockerfile.simple
+build-debug.sh
 
 # Documentation
-README.md
-DEPLOY.md
 *.md
 
-# Scripts
-build-production.sh
+# Logs
+logs
+*.log
+
+# Cache
+.cache
+.parcel-cache
+
+# Test coverage
+coverage
+.nyc_output
