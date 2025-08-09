@@ -217,14 +217,14 @@ export default function Leads() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Lead</TableHead>
-                    <TableHead>Contato</TableHead>
-                    <TableHead>Empresa</TableHead>
-                    <TableHead>Origem</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Prioridade</TableHead>
-                    <TableHead>Data</TableHead>
-                    <TableHead></TableHead>
+                    <TableHead className="w-[250px]">Lead</TableHead>
+                    <TableHead className="w-[200px]">Contato</TableHead>
+                    <TableHead className="w-[150px]">Empresa</TableHead>
+                    <TableHead className="w-[120px]">Origem</TableHead>
+                    <TableHead className="w-[140px]">Status</TableHead>
+                    <TableHead className="w-[120px]">Prioridade</TableHead>
+                    <TableHead className="w-[140px]">Data</TableHead>
+                    <TableHead className="w-[50px]"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
