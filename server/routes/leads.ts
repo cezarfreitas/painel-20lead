@@ -283,7 +283,7 @@ export const resendWebhookForLead: RequestHandler = async (req, res) => {
  */
 export const getDashboardStats: RequestHandler = async (req, res) => {
   try {
-    const { leads } = await LeadDB.getAll({ limit: 1000 }); // Get all for stats
+    const { leads } = await LeadDB.getAll({}); // Get all for stats
 
     const leadsArray = leads as any[];
     const totalLeads = leadsArray.length;
