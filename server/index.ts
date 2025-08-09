@@ -41,6 +41,16 @@ export function createServer() {
     });
   });
 
+  // Test lead creation endpoint
+  app.post("/api/test-lead", async (req, res) => {
+    console.log("🧪 [TEST] Received test lead request");
+    console.log("🧪 [TEST] Body:", JSON.stringify(req.body, null, 2));
+
+    // Call the actual createLead function
+    const { createLead } = await import("./routes/leads");
+    return createLead(req, res);
+  });
+
   // Test webhook endpoint
   app.post("/api/test-webhook", async (_req, res) => {
     const { triggerWebhooks } = await import("./routes/webhooks");
