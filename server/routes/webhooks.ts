@@ -19,6 +19,21 @@ let nextLogId = 1;
  */
 export const getWebhooks: RequestHandler = (req, res) => {
   try {
+    const dbWebhooks = WebhookDB.getAll();
+
+    // Convert to API format
+    const webhooks = dbWebhooks.map((wh: any) => ({
+      id: wh.id,
+      name: wh.name,
+      url: wh.url,
+      isActive: wh.is_active === 1,
+      createdAt: wh.created_at,
+      updatedAt: wh.updated_at,
+      lastTriggered: wh.last_triggered,
+      successCount: wh.success_count,
+      failureCount: wh.failure_count
+    }));
+
     const response: GetWebhooksResponse = {
       success: true,
       webhooks: webhooks
