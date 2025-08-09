@@ -55,12 +55,11 @@ export default function Leads() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<Lead["status"] | "all">("all");
   const [priorityFilter, setPriorityFilter] = useState<Lead["priority"] | "all">("all");
 
   useEffect(() => {
     fetchLeads();
-  }, [search, statusFilter, priorityFilter]);
+  }, [search, priorityFilter]);
 
   const fetchLeads = async () => {
     try {
