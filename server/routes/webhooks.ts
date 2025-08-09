@@ -344,9 +344,9 @@ const triggerSingleWebhook = async (
 /**
  * GET /api/webhooks/logs - Get webhook delivery logs
  */
-export const getWebhookLogs: RequestHandler = (req, res) => {
+export const getWebhookLogs: RequestHandler = async (req, res) => {
   try {
-    const logs = WebhookLogDB.getRecent(100);
+    const logs = await WebhookLogDB.getRecent(100);
 
     res.json({
       success: true,
