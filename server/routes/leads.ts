@@ -158,12 +158,17 @@ export const createLead: RequestHandler = (req, res) => {
     
     nextId++;
     leads.push(newLead);
-    
+
+    // Trigger webhooks asynchronously (don't wait for them)
+    triggerWebhooks(newLead).catch(error => {
+      console.error("Error triggering webhooks:", error);
+    });
+
     const response: CreateLeadResponse = {
       success: true,
       lead: newLead
     };
-    
+
     res.status(201).json(response);
   } catch (error) {
     console.error("Error creating lead:", error);
