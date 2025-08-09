@@ -427,40 +427,40 @@ function enviarLead() {
       {/* Instructions */}
       <Card>
         <CardHeader>
-          <CardTitle>Como Usar os Pixels</CardTitle>
+          <CardTitle>Como Integrar seus Sites</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="flex items-start gap-4">
               <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-bold">1</div>
               <div>
-                <h3 className="font-semibold">Crie um novo pixel</h3>
+                <h3 className="font-semibold">Crie um código de origem</h3>
                 <p className="text-sm text-muted-foreground">
-                  Clique em "Novo Pixel" e defina um nome e o website que será monitorado
+                  Clique em "Novo Pixel" e defina um nome e o website para gerar um código único
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-start gap-4">
               <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-bold">2</div>
               <div>
-                <h3 className="font-semibold">Instale o código no seu site</h3>
+                <h3 className="font-semibold">Configure seus formulários</h3>
                 <p className="text-sm text-muted-foreground">
-                  Copie o código do pixel e adicione na seção &lt;head&gt; do seu website
+                  Faça seus formulários enviarem POST para o endpoint /api/leads com o código de origem
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-start gap-4">
               <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-bold">3</div>
               <div>
-                <h3 className="font-semibold">Configure seus formulários</h3>
+                <h3 className="font-semibold">Envie os dados obrigatórios</h3>
                 <p className="text-sm text-muted-foreground">
-                  Use a função LeadHub.track() nos seus formulários para enviar leads automaticamente
+                  Nome, WhatsApp/Email e source (código do pixel) são obrigatórios
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-start gap-4">
               <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-bold">4</div>
               <div>
