@@ -10,49 +10,7 @@ import {
   DashboardStatsResponse
 } from "@shared/api";
 import { triggerWebhooks } from "./webhooks";
-
-// In-memory storage for leads (in production, use a real database)
-let leads: Lead[] = [
-  {
-    id: "1",
-    phone: "+55 11 99999-9999",
-    source: "landing-page-produtos",
-    name: "João Silva",
-    company: "Tech Solutions Ltd",
-    message: "Interessado em saber mais sobre os serviços",
-    status: "new",
-    priority: "high",
-    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    tags: ["produto", "premium"]
-  },
-  {
-    id: "2",
-    phone: "+55 21 88888-8888",
-    source: "formulario-contato",
-    name: "Maria Santos",
-    company: "Inovação & Co",
-    message: "Gostaria de agendar uma demonstração",
-    status: "contacted",
-    priority: "medium",
-    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    updatedAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-    tags: ["demo", "empresarial"]
-  },
-  {
-    id: "3",
-    phone: "+55 11 99999-9999",
-    source: "webinar-growth",
-    name: "Pedro Costa",
-    company: "StartupXYZ",
-    message: "Preciso de uma solução escalável",
-    status: "qualified",
-    priority: "high",
-    createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-    updatedAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-    tags: ["startup", "growth"]
-  }
-];
+import { LeadDB } from "../database";
 
 let nextId = 4;
 
