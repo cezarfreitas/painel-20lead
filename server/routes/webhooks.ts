@@ -128,7 +128,7 @@ export const updateWebhook: RequestHandler = async (req, res) => {
     const webhookId = req.params.id;
     const updates = req.body as UpdateWebhookRequest;
 
-    const existingWebhook = WebhookDB.getById(webhookId);
+    const existingWebhook = await WebhookDB.getById(webhookId);
 
     if (!existingWebhook) {
       const response: WebhookResponse = {
@@ -152,7 +152,7 @@ export const updateWebhook: RequestHandler = async (req, res) => {
     }
 
     // Update webhook
-    const dbWebhook = WebhookDB.update(webhookId, updates);
+    const dbWebhook = await WebhookDB.update(webhookId, updates);
 
     // Convert to API format
     const updatedWebhook: Webhook = {
