@@ -17,16 +17,16 @@ let nextLogId = 1;
 /**
  * GET /api/webhooks - Get all webhooks
  */
-export const getWebhooks: RequestHandler = (req, res) => {
+export const getWebhooks: RequestHandler = async (req, res) => {
   try {
-    const dbWebhooks = WebhookDB.getAll();
+    const dbWebhooks = await WebhookDB.getAll();
 
     // Convert to API format
-    const webhooks = dbWebhooks.map((wh: any) => ({
+    const webhooks = (dbWebhooks as any[]).map((wh: any) => ({
       id: wh.id,
       name: wh.name,
       url: wh.url,
-      isActive: wh.is_active === 1,
+      isActive: wh.is_active === 1 || wh.is_active === true,
       createdAt: wh.created_at,
       updatedAt: wh.updated_at,
       lastTriggered: wh.last_triggered,
