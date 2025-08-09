@@ -2,6 +2,13 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
+import {
+  getLeads,
+  createLead,
+  updateLead,
+  deleteLead,
+  getDashboardStats
+} from "./routes/leads";
 
 export function createServer() {
   const app = express();
@@ -18,6 +25,15 @@ export function createServer() {
   });
 
   app.get("/api/demo", handleDemo);
+
+  // Lead management routes
+  app.get("/api/leads", getLeads);
+  app.post("/api/leads", createLead);
+  app.put("/api/leads/:id", updateLead);
+  app.delete("/api/leads/:id", deleteLead);
+
+  // Dashboard routes
+  app.get("/api/dashboard/stats", getDashboardStats);
 
   return app;
 }
