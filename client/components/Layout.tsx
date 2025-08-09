@@ -1,13 +1,14 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { 
-  BarChart3, 
-  Users, 
-  Settings, 
+import {
+  BarChart3,
+  Users,
+  Settings,
   FileText,
   Menu,
-  X
+  X,
+  Code
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
