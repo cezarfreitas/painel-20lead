@@ -313,7 +313,7 @@ const triggerSingleWebhook = async (
   } catch (error) {
     console.error(`Webhook ${webhook.id} failed (attempt ${attempt}):`, error);
 
-    WebhookDB.incrementFailure(webhook.id);
+    await WebhookDB.incrementFailure(webhook.id);
 
     const log: WebhookLog = {
       id: logId,
@@ -337,7 +337,7 @@ const triggerSingleWebhook = async (
       }, retryDelay);
     }
 
-    WebhookLogDB.create(log);
+    await WebhookLogDB.create(log);
   }
 };
 
