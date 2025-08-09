@@ -48,16 +48,25 @@ export function createServer() {
     const testLead = {
       id: "test_" + Date.now(),
       phone: "+55 11 99999-9999",
-      source: "test",
-      name: "Teste Webhook",
+      source: "test-api",
+      name: "Teste Webhook Completo",
       email: "teste@example.com",
       company: "Test Company",
-      message: "Testando webhook",
+      message: "Testando webhook com campos personalizados",
       status: "new" as const,
-      priority: "medium" as const,
+      priority: "high" as const,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      tags: ["test"],
+      tags: ["test", "webhook", "custom-fields"],
+      customData: {
+        budget: "R$ 10.000",
+        interesse: "plano-enterprise",
+        agendamento: "2025-08-15 14:00",
+        funcionarios: 100,
+        website: "https://testcompany.com",
+        origem_campanha: "google-ads",
+        valor_contrato: 50000
+      }
     };
 
     try {
