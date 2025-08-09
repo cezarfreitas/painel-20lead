@@ -186,11 +186,11 @@ export const updateWebhook: RequestHandler = async (req, res) => {
 /**
  * DELETE /api/webhooks/:id - Delete a webhook
  */
-export const deleteWebhook: RequestHandler = (req, res) => {
+export const deleteWebhook: RequestHandler = async (req, res) => {
   try {
     const webhookId = req.params.id;
 
-    const existingWebhook = WebhookDB.getById(webhookId);
+    const existingWebhook = await WebhookDB.getById(webhookId);
 
     if (!existingWebhook) {
       return res.status(404).json({
@@ -199,7 +199,7 @@ export const deleteWebhook: RequestHandler = (req, res) => {
       });
     }
 
-    WebhookDB.delete(webhookId);
+    await WebhookDB.delete(webhookId);
 
     res.json({ success: true });
   } catch (error) {
