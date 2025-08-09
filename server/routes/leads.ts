@@ -142,12 +142,12 @@ export const createLead: RequestHandler = (req, res) => {
     // Create new lead
     const newLead: Lead = {
       id: nextId.toString(),
-      name: leadData.name,
       phone: leadData.phone,
+      source: leadData.source,
+      name: leadData.name, // opcional
       email: leadData.email, // opcional
       company: leadData.company,
       message: leadData.message,
-      source: leadData.source,
       status: "new",
       priority: "medium",
       createdAt: new Date().toISOString(),
