@@ -193,12 +193,25 @@ async function insertSampleData() {
 
     await db.execute(
       `
-      INSERT INTO webhooks (id, name, url, is_active, created_at, updated_at, last_triggered, success_count, failure_count)
+      INSERT INTO webhooks (id, name, url, is_active, created_at, updated_at, last_triggered, success_count, failure_count, custom_fields, send_fields)
       VALUES
-        ('wh_001', 'Sistema CRM Principal', 'https://api.meucrm.com/webhooks/leads', true, ?, ?, ?, 45, 2),
-        ('wh_002', 'Sistema de Email Marketing', 'https://emailmarketing.com/api/contacts', true, ?, ?, ?, 23, 0)
+        ('wh_001', 'Sistema CRM Principal', 'https://api.meucrm.com/webhooks/leads', true, ?, ?, ?, 45, 2, ?, ?),
+        ('wh_002', 'Sistema de Email Marketing', 'https://emailmarketing.com/api/contacts', true, ?, ?, ?, 23, 0, ?, ?)
     `,
-      [weekAgo, weekAgo, hourAgo, threeDaysAgo, threeDaysAgo, hourAgo],
+      [
+        weekAgo, weekAgo, hourAgo,
+        JSON.stringify([
+          { name: "budget", label: "Orçamento", type: "text", required: false },
+          { name: "interesse", label: "Interesse", type: "text", required: false }
+        ]),
+        JSON.stringify(["phone", "name", "source", "budget", "interesse"]),
+        threeDaysAgo, threeDaysAgo, hourAgo,
+        JSON.stringify([
+          { name: "agendamento", label: "Data Agendamento", type: "text", required: false },
+          { name: "funcionarios", label: "Qtd Funcionários", type: "number", required: false }
+        ]),
+        JSON.stringify(["phone", "name", "email", "company", "agendamento", "funcionarios"])
+      ],
     );
     console.log("[WEBHOOK] Sample webhooks inserted successfully");
   }
