@@ -1,25 +1,22 @@
-# Simple LeadHub Dockerfile for debugging
-FROM node:18-alpine
+# Ultra Simple LeadHub Dockerfile for debugging
+FROM node:18
 
 WORKDIR /app
 
-# Copy everything
+# Copy everything first
 COPY . .
 
-# Install dependencies
-RUN npm install
+# Install with npm install (not ci)
+RUN npm install --legacy-peer-deps
 
 # Build
 RUN npm run build
 
-# Set environment
+# Environment
 ENV NODE_ENV=production
 ENV PORT=80
 
 EXPOSE 80
-
-# Simple health check
-HEALTHCHECK CMD curl -f http://localhost:80/api/health || exit 1
 
 # Start
 CMD ["npm", "start"]
