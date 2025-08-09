@@ -7,8 +7,7 @@ import {
   createLead,
   updateLead,
   deleteLead,
-  getDashboardStats,
-  trackPageview
+  getDashboardStats
 } from "./routes/leads";
 import {
   getWebhooks,
