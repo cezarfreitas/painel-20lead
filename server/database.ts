@@ -354,6 +354,9 @@ export const LeadDB = {
 // Database operations for webhooks
 export const WebhookDB = {
   getAll: async () => {
+    if (!isConnected) {
+      return [...mockWebhooks].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    }
     const [result] = await db.execute('SELECT * FROM webhooks ORDER BY created_at DESC');
     return result;
   },
