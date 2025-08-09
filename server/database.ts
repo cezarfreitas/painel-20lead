@@ -531,8 +531,8 @@ export const WebhookLogDB = {
         log.error || null,
         log.attempt,
         log.maxAttempts,
-        log.createdAt,
-        log.nextRetry || null,
+        new Date(log.createdAt),
+        log.nextRetry ? new Date(log.nextRetry) : null,
       ],
     );
   },
