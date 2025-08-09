@@ -15,7 +15,6 @@ let leads: Lead[] = [
   {
     id: "1",
     name: "João Silva",
-    email: "joao@example.com",
     phone: "+55 11 99999-9999",
     company: "Tech Solutions Ltd",
     message: "Interessado em saber mais sobre os serviços",
@@ -27,9 +26,8 @@ let leads: Lead[] = [
     tags: ["produto", "premium"]
   },
   {
-    id: "2", 
+    id: "2",
     name: "Maria Santos",
-    email: "maria@empresa.com",
     phone: "+55 21 88888-8888",
     company: "Inovação & Co",
     message: "Gostaria de agendar uma demonstração",
@@ -43,7 +41,7 @@ let leads: Lead[] = [
   {
     id: "3",
     name: "Pedro Costa",
-    email: "pedro@startup.com",
+    phone: "+55 11 99999-9999",
     company: "StartupXYZ",
     message: "Preciso de uma solução escalável",
     source: "webinar-growth",
