@@ -4,9 +4,10 @@ services:
   leadhub:
     build: .
     ports:
-      - "8080:8080"
+      - "80:80"
     environment:
       - NODE_ENV=production
+      - PORT=80
       - MYSQL_DB=mysql://leadhub:leadhub_password@mysql:3306/leadhub
     depends_on:
       mysql:
