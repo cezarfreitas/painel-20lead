@@ -205,7 +205,7 @@ export default function Leads() {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[250px]">Lead</TableHead>
-                    <TableHead className="w-[200px]">Contato</TableHead>
+                    <TableHead className="w-[200px]">WhatsApp</TableHead>
                     <TableHead className="w-[150px]">Empresa</TableHead>
                     <TableHead className="w-[120px]">Origem</TableHead>
                     <TableHead className="w-[120px]">Prioridade</TableHead>
