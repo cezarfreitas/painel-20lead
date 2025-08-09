@@ -32,6 +32,8 @@ export interface Webhook {
 export interface CreateWebhookRequest {
   name: string;
   url: string;
+  customFields?: WebhookField[];
+  sendFields?: string[];
 }
 
 /**
@@ -41,6 +43,8 @@ export interface UpdateWebhookRequest {
   name?: string;
   url?: string;
   isActive?: boolean;
+  customFields?: WebhookField[];
+  sendFields?: string[];
 }
 
 /**
