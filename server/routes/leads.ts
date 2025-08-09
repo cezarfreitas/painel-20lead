@@ -281,26 +281,27 @@ export const resendWebhookForLead: RequestHandler = async (req, res) => {
 /**
  * GET /api/dashboard/stats - Get dashboard statistics
  */
-export const getDashboardStats: RequestHandler = (req, res) => {
+export const getDashboardStats: RequestHandler = async (req, res) => {
   try {
-    const { leads } = LeadDB.getAll({ limit: 1000 }); // Get all for stats
+    const { leads } = await LeadDB.getAll({ limit: 1000 }); // Get all for stats
 
-    const totalLeads = leads.length;
-    const newLeads = leads.filter((lead: any) => lead.status === "new").length;
-    const convertedLeads = leads.filter((lead: any) => lead.status === "converted").length;
+    const leadsArray = leads as any[];
+    const totalLeads = leadsArray.length;
+    const newLeads = leadsArray.filter((lead: any) => lead.status === "new").length;
+    const convertedLeads = leadsArray.filter((lead: any) => lead.status === "converted").length;
 
-    const leadsByStatus = leads.reduce((acc: any, lead: any) => {
+    const leadsByStatus = leadsArray.reduce((acc: any, lead: any) => {
       acc[lead.status] = (acc[lead.status] || 0) + 1;
       return acc;
     }, {} as Record<Lead["status"], number>);
 
-    const leadsBySource = leads.reduce((acc: any, lead: any) => {
+    const leadsBySource = leadsArray.reduce((acc: any, lead: any) => {
       acc[lead.source] = (acc[lead.source] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
     // Get 5 most recent leads and convert to API format
-    const recentDbLeads = leads
+    const recentDbLeads = leadsArray
       .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       .slice(0, 5);
 
