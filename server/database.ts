@@ -69,7 +69,9 @@ async function createTables() {
       updated_at DATETIME NOT NULL,
       last_triggered DATETIME,
       success_count INT DEFAULT 0,
-      failure_count INT DEFAULT 0
+      failure_count INT DEFAULT 0,
+      custom_fields JSON,
+      send_fields JSON
     )
   `);
 
