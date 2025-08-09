@@ -261,7 +261,14 @@ export const LeadDB = {
     }
 
     const [leads] = await db.execute(query, values);
-    const [totalResult] = await db.execute(countQuery, values.slice(0, values.length - (params.limit ? (params.page && params.page > 1 ? 2 : 1) : 0))) as any;
+
+    // For count query, use only search values (not limit/offset)
+    const countValues = [];
+    if (params.search) {
+      const searchTerm = `%${params.search}%`;
+      countValues.push(searchTerm, searchTerm, searchTerm, searchTerm);
+    }
+    const [totalResult] = await db.execute(countQuery, countValues) as any;
     const total = totalResult[0]?.count || 0;
 
     return { leads, total };
