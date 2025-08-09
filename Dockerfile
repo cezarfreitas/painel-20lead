@@ -18,6 +18,11 @@ COPY . .
 # Build the application
 RUN npm run build
 
+# Verify build artifacts
+RUN ls -la dist/ || echo "dist directory not found"
+RUN ls -la dist/spa/ || echo "spa directory not found"
+RUN ls -la dist/server/ || echo "server directory not found"
+
 # Create user
 RUN adduser -D -s /bin/sh appuser && chown -R appuser:appuser /app
 
