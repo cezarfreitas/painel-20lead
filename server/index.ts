@@ -36,5 +36,8 @@ export function createServer() {
   // Dashboard routes
   app.get("/api/dashboard/stats", getDashboardStats);
 
+  // Tracking routes
+  app.get("/api/tracking/pageview", trackPageview);
+
   return app;
 }
