@@ -40,10 +40,10 @@ COPY --chown=leadhub:nodejs shared ./shared
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV PORT=8080
+ENV PORT=80
 
 # Expose port
-EXPOSE 8080
+EXPOSE 80
 
 # Switch to non-root user
 USER leadhub
