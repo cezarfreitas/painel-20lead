@@ -1,42 +1,16 @@
 import { RequestHandler } from "express";
-import { 
-  Webhook, 
-  CreateWebhookRequest, 
+import {
+  Webhook,
+  CreateWebhookRequest,
   UpdateWebhookRequest,
-  WebhookResponse, 
+  WebhookResponse,
   GetWebhooksResponse,
   WebhookPayload,
   WebhookLog
 } from "@shared/webhooks";
 import { Lead } from "@shared/api";
+import { WebhookDB, WebhookLogDB } from "../database";
 
-// In-memory storage for webhooks (in production, use a real database)
-let webhooks: Webhook[] = [
-  {
-    id: "wh_001",
-    name: "Sistema CRM Principal",
-    url: "https://api.meucrm.com/webhooks/leads",
-    isActive: true,
-    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    lastTriggered: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    successCount: 45,
-    failureCount: 2
-  },
-  {
-    id: "wh_002", 
-    name: "Sistema de Email Marketing",
-    url: "https://emailmarketing.com/api/contacts",
-    isActive: true,
-    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    lastTriggered: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-    successCount: 23,
-    failureCount: 0
-  }
-];
-
-let webhookLogs: WebhookLog[] = [];
 let nextWebhookId = 3;
 let nextLogId = 1;
 
