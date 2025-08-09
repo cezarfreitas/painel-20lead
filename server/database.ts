@@ -97,26 +97,39 @@ async function createTables() {
 async function cleanupCorruptedTags() {
   try {
     // Get all leads with corrupted tags (should be JSON arrays but are strings)
-    const [leads] = await db.execute('SELECT id, tags FROM leads WHERE tags IS NOT NULL') as any;
+    const [leads] = (await db.execute(
+      "SELECT id, tags FROM leads WHERE tags IS NOT NULL",
+    )) as any;
 
     for (const lead of leads) {
-      if (lead.tags && typeof lead.tags === 'string' && !lead.tags.startsWith('[')) {
+      if (
+        lead.tags &&
+        typeof lead.tags === "string" &&
+        !lead.tags.startsWith("[")
+      ) {
         // This is a corrupted tag (comma-separated string)
-        let fixedTags = '[]';
+        let fixedTags = "[]";
 
-        if (lead.tags.includes(',')) {
-          const tagArray = lead.tags.split(',').map((tag: string) => tag.trim());
+        if (lead.tags.includes(",")) {
+          const tagArray = lead.tags
+            .split(",")
+            .map((tag: string) => tag.trim());
           fixedTags = JSON.stringify(tagArray);
         } else if (lead.tags.length > 0) {
           fixedTags = JSON.stringify([lead.tags]);
         }
 
-        await db.execute('UPDATE leads SET tags = ? WHERE id = ?', [fixedTags, lead.id]);
-        console.log(`Fixed tags for lead ${lead.id}: ${lead.tags} -> ${fixedTags}`);
+        await db.execute("UPDATE leads SET tags = ? WHERE id = ?", [
+          fixedTags,
+          lead.id,
+        ]);
+        console.log(
+          `Fixed tags for lead ${lead.id}: ${lead.tags} -> ${fixedTags}`,
+        );
       }
     }
   } catch (error) {
-    console.error('Error cleaning up corrupted tags:', error);
+    console.error("Error cleaning up corrupted tags:", error);
   }
 }
 
@@ -164,7 +177,9 @@ async function insertSampleData() {
 
   if (webhooksResult[0].count === 0) {
     console.log("Inserting sample webhooks...");
-    console.log("[WEBHOOK] No existing webhooks found, creating sample webhooks");
+    console.log(
+      "[WEBHOOK] No existing webhooks found, creating sample webhooks",
+    );
 
     const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);

@@ -35,6 +35,7 @@ docker-compose -f docker-compose.prod.yml logs -f
 ### Opção 3: Cloud Deploy
 
 #### Fly.io
+
 ```bash
 # Configurar fly.toml
 fly launch --dockerfile
@@ -42,6 +43,7 @@ fly deploy
 ```
 
 #### Railway
+
 ```bash
 railway login
 railway link
@@ -49,6 +51,7 @@ railway up
 ```
 
 #### DigitalOcean App Platform
+
 1. Conectar repositório GitHub
 2. Configurar Dockerfile build
 3. Adicionar variáveis de ambiente
@@ -86,6 +89,7 @@ MYSQL_DB="mysql://user:pass@34.123.45.67:3306/leadhub?ssl=true"
 ## 🛡️ Segurança em Produção
 
 ### SSL/HTTPS (nginx incluído)
+
 ```bash
 # Gerar certificados SSL (Let's Encrypt)
 certbot --nginx -d yourdomain.com
@@ -96,6 +100,7 @@ cp your-key.pem ssl/key.pem
 ```
 
 ### Firewall
+
 ```bash
 # Permitir apenas portas necessárias
 ufw allow 80/tcp
@@ -107,12 +112,14 @@ ufw enable
 ## 📊 Monitoramento
 
 ### Health Check
+
 ```bash
 curl http://localhost/api/health
 # Resposta: {"status":"ok","timestamp":"...","service":"LeadHub API"}
 ```
 
 ### Logs de Produção
+
 ```bash
 # Docker logs
 docker logs leadhub-prod -f
@@ -125,6 +132,7 @@ docker-compose -f docker-compose.prod.yml logs leadhub
 ```
 
 ### Métricas
+
 ```bash
 # Status dos containers
 docker ps
@@ -139,6 +147,7 @@ docker system df
 ## 🔄 Backup e Manutenção
 
 ### Backup do MySQL
+
 ```bash
 # Backup automático
 docker exec mysql mysqldump -u leadhub -p leadhub > backup_$(date +%Y%m%d_%H%M%S).sql
@@ -148,6 +157,7 @@ docker exec -i mysql mysql -u leadhub -p leadhub < backup.sql
 ```
 
 ### Atualizações
+
 ```bash
 # 1. Rebuild image
 docker build -t leadhub:latest .
@@ -172,21 +182,25 @@ docker run -d \
 ### Problemas Comuns
 
 **Erro de Conexão MySQL:**
+
 - Verificar string de conexão
 - Testar conectividade: `telnet host 3306`
 - Verificar permissões do usuário
 
 **Container não inicia:**
+
 - Ver logs: `docker logs leadhub-prod`
 - Verificar variáveis de ambiente
 - Verificar porta disponível: `netstat -ln | grep :80`
 
 **Performance lenta:**
+
 - Verificar recursos: `docker stats`
 - Otimizar MySQL: adicionar índices
 - Usar Redis para cache (futuro)
 
 ### Logs de Debug
+
 ```bash
 # Habilitar logs detalhados
 docker run -e DEBUG=* leadhub:latest
@@ -198,18 +212,21 @@ journalctl -u docker.service -f
 ## 📈 Otimizações para Produção
 
 ### Performance
+
 - Use PlanetScale ou RDS para MySQL
 - Configure CDN para assets estáticos
 - Implemente cache Redis (opcional)
 - Use load balancer para múltiplas instâncias
 
 ### Escalabilidade
+
 ```bash
 # Múltiplas instâncias
 docker-compose -f docker-compose.prod.yml up --scale leadhub=3
 ```
 
 ### Monitoramento Avançado
+
 - Sentry para error tracking
 - New Relic ou DataDog para APM
 - Grafana + Prometheus para métricas

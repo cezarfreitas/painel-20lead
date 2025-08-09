@@ -37,7 +37,7 @@ export function createServer() {
     res.json({
       status: "ok",
       timestamp: new Date().toISOString(),
-      service: "LeadHub API"
+      service: "LeadHub API",
     });
   });
 
@@ -57,7 +57,7 @@ export function createServer() {
       priority: "medium" as const,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      tags: ["test"]
+      tags: ["test"],
     };
 
     try {
@@ -65,7 +65,12 @@ export function createServer() {
       res.json({ success: true, message: "Webhook test triggered", testLead });
     } catch (error) {
       console.error("Error in test webhook:", error);
-      res.status(500).json({ success: false, error: error instanceof Error ? error.message : String(error) });
+      res
+        .status(500)
+        .json({
+          success: false,
+          error: error instanceof Error ? error.message : String(error),
+        });
     }
   });
 
