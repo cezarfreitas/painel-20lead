@@ -157,6 +157,22 @@ export const createLead: RequestHandler = async (req, res) => {
             }
           })()
         : [],
+      customData: dbLead.custom_data
+        ? (() => {
+            try {
+              return JSON.parse(dbLead.custom_data);
+            } catch (e) {
+              console.error(
+                "Error parsing custom_data for lead",
+                dbLead.id,
+                ":",
+                dbLead.custom_data,
+                e,
+              );
+              return {};
+            }
+          })()
+        : {},
     };
 
     // Trigger webhooks asynchronously (don't wait for them)
@@ -242,6 +258,22 @@ export const updateLead: RequestHandler = async (req, res) => {
             }
           })()
         : [],
+      customData: dbLead.custom_data
+        ? (() => {
+            try {
+              return JSON.parse(dbLead.custom_data);
+            } catch (e) {
+              console.error(
+                "Error parsing custom_data for lead",
+                dbLead.id,
+                ":",
+                dbLead.custom_data,
+                e,
+              );
+              return {};
+            }
+          })()
+        : {},
     };
 
     const response: UpdateLeadResponse = {
@@ -333,6 +365,22 @@ export const resendWebhookForLead: RequestHandler = async (req, res) => {
             }
           })()
         : [],
+      customData: dbLead.custom_data
+        ? (() => {
+            try {
+              return JSON.parse(dbLead.custom_data);
+            } catch (e) {
+              console.error(
+                "Error parsing custom_data for lead",
+                dbLead.id,
+                ":",
+                dbLead.custom_data,
+                e,
+              );
+              return {};
+            }
+          })()
+        : {},
     };
 
     // Trigger webhooks for this specific lead
