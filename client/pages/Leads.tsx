@@ -276,8 +276,14 @@ export default function Leads() {
                           value={lead.status}
                           onValueChange={(value) => updateLeadStatus(lead.id, value as Lead["status"])}
                         >
-                          <SelectTrigger className="w-[130px] h-8">
-                            <SelectValue />
+                          <SelectTrigger className="w-[140px] h-9">
+                            <SelectValue placeholder="Status">
+                              {lead.status === "new" && "Novo"}
+                              {lead.status === "contacted" && "Contatado"}
+                              {lead.status === "qualified" && "Qualificado"}
+                              {lead.status === "converted" && "Convertido"}
+                              {lead.status === "lost" && "Perdido"}
+                            </SelectValue>
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="new">Novo</SelectItem>
@@ -288,14 +294,18 @@ export default function Leads() {
                           </SelectContent>
                         </Select>
                       </TableCell>
-                      
+
                       <TableCell>
                         <Select
                           value={lead.priority}
                           onValueChange={(value) => updateLeadPriority(lead.id, value as Lead["priority"])}
                         >
-                          <SelectTrigger className="w-[100px] h-8">
-                            <SelectValue />
+                          <SelectTrigger className="w-[110px] h-9">
+                            <SelectValue placeholder="Prioridade">
+                              {lead.priority === "low" && "Baixa"}
+                              {lead.priority === "medium" && "Média"}
+                              {lead.priority === "high" && "Alta"}
+                            </SelectValue>
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="low">Baixa</SelectItem>
