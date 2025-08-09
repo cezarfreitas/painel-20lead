@@ -39,7 +39,7 @@ MYSQL_DB=mysql://username:password@host:3306/database_name
 
 # Opcional
 NODE_ENV=production
-PORT=8080
+PORT=80
 ```
 
 #### Deploy em Cloud Providers
