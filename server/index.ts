@@ -46,5 +46,12 @@ export function createServer() {
   // Tracking routes
   app.get("/api/tracking/pageview", trackPageview);
 
+  // Webhook routes
+  app.get("/api/webhooks", getWebhooks);
+  app.post("/api/webhooks", createWebhook);
+  app.put("/api/webhooks/:id", updateWebhook);
+  app.delete("/api/webhooks/:id", deleteWebhook);
+  app.get("/api/webhooks/logs", getWebhookLogs);
+
   return app;
 }
