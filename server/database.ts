@@ -387,6 +387,7 @@ export const LeadDB = {
         created_at: lead.createdAt,
         updated_at: lead.updatedAt,
         tags: JSON.stringify(lead.tags || []),
+        custom_data: JSON.stringify(lead.customData || {}),
       };
       mockLeads.push(newLead);
       return newLead;
@@ -394,8 +395,8 @@ export const LeadDB = {
 
     await db.execute(
       `
-      INSERT INTO leads (id, phone, source, name, email, company, message, status, priority, created_at, updated_at, tags)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO leads (id, phone, source, name, email, company, message, status, priority, created_at, updated_at, tags, custom_data)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
       [
         lead.id,
@@ -410,6 +411,7 @@ export const LeadDB = {
         new Date(lead.createdAt),
         new Date(lead.updatedAt),
         JSON.stringify(lead.tags || []),
+        JSON.stringify(lead.customData || {}),
       ],
     );
 
