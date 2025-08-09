@@ -17,20 +17,20 @@ let nextId = 4;
 /**
  * GET /api/leads - Get all leads with optional filtering
  */
-export const getLeads: RequestHandler = (req, res) => {
+export const getLeads: RequestHandler = async (req, res) => {
   try {
     const query = req.query as GetLeadsQuery;
     const page = parseInt(query.page?.toString() || "1");
     const limit = parseInt(query.limit?.toString() || "10");
 
-    const { leads, total } = LeadDB.getAll({
+    const { leads, total } = await LeadDB.getAll({
       search: query.search,
       page,
       limit
     });
 
     // Convert database format to API format
-    const formattedLeads = leads.map((lead: any) => ({
+    const formattedLeads = (leads as any[]).map((lead: any) => ({
       id: lead.id,
       phone: lead.phone,
       source: lead.source,
