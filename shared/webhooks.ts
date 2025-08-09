@@ -96,5 +96,7 @@ export interface WebhookPayload {
     company?: string;
     message?: string;
     createdAt: string;
+    customData?: Record<string, any>; // For dynamic custom fields
+    [key: string]: any; // Allow any additional fields
   };
 }
