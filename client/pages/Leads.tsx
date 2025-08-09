@@ -65,19 +65,27 @@ export default function Leads() {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      
+
       if (search) params.append("search", search);
-      if (statusFilter !== "all") params.append("status", statusFilter);
       if (priorityFilter !== "all") params.append("priority", priorityFilter);
-      
+
       const response = await fetch(`/api/leads?${params}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = (await response.json()) as GetLeadsResponse;
-      
+
       if (data.success) {
         setLeads(data.leads);
+      } else {
+        console.error("Failed to fetch leads:", data);
+        setLeads([]);
       }
     } catch (error) {
       console.error("Error fetching leads:", error);
+      setLeads([]);
     } finally {
       setLoading(false);
     }
