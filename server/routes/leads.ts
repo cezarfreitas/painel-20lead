@@ -256,6 +256,39 @@ export const deleteLead: RequestHandler = (req, res) => {
 };
 
 /**
+ * GET /api/tracking/pageview - Track pageview from pixel
+ */
+export const trackPageview: RequestHandler = (req, res) => {
+  try {
+    const { pixel, url } = req.query;
+
+    // Log pageview (in production, save to database)
+    console.log(`Pageview tracked - Pixel: ${pixel}, URL: ${url}`);
+
+    // Return 1x1 transparent pixel
+    const pixelBuffer = Buffer.from([
+      0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00,
+      0x80, 0x00, 0x00, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x21,
+      0xf9, 0x04, 0x01, 0x00, 0x00, 0x00, 0x00, 0x2c, 0x00, 0x00,
+      0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x02, 0x02, 0x04,
+      0x01, 0x00, 0x3b
+    ]);
+
+    res.set({
+      'Content-Type': 'image/gif',
+      'Content-Length': pixelBuffer.length,
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Access-Control-Allow-Origin': '*'
+    });
+
+    res.send(pixelBuffer);
+  } catch (error) {
+    console.error("Error tracking pageview:", error);
+    res.status(500).send('Error');
+  }
+};
+
+/**
  * GET /api/dashboard/stats - Get dashboard statistics
  */
 export const getDashboardStats: RequestHandler = (req, res) => {
