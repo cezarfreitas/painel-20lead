@@ -146,31 +146,51 @@ export const updateLead: RequestHandler = (req, res) => {
   try {
     const leadId = req.params.id;
     const updates = req.body as UpdateLeadRequest;
-    
-    const leadIndex = leads.findIndex(lead => lead.id === leadId);
-    
-    if (leadIndex === -1) {
+
+    const existingLead = LeadDB.getById(leadId);
+
+    if (!existingLead) {
       const response: UpdateLeadResponse = {
         success: false,
         error: "Lead não encontrado"
       };
       return res.status(404).json(response);
     }
-    
-    // Update lead
-    const updatedLead = {
-      ...leads[leadIndex],
-      ...updates,
-      updatedAt: new Date().toISOString()
+
+    // Convert API updates to database format
+    const dbUpdates: any = {};
+    if (updates.name !== undefined) dbUpdates.name = updates.name;
+    if (updates.email !== undefined) dbUpdates.email = updates.email;
+    if (updates.phone !== undefined) dbUpdates.phone = updates.phone;
+    if (updates.company !== undefined) dbUpdates.company = updates.company;
+    if (updates.message !== undefined) dbUpdates.message = updates.message;
+    if (updates.status !== undefined) dbUpdates.status = updates.status;
+    if (updates.priority !== undefined) dbUpdates.priority = updates.priority;
+    if (updates.tags !== undefined) dbUpdates.tags = JSON.stringify(updates.tags);
+
+    const dbLead = LeadDB.update(leadId, dbUpdates);
+
+    // Convert back to API format
+    const updatedLead: Lead = {
+      id: dbLead.id,
+      phone: dbLead.phone,
+      source: dbLead.source,
+      name: dbLead.name,
+      email: dbLead.email,
+      company: dbLead.company,
+      message: dbLead.message,
+      status: dbLead.status,
+      priority: dbLead.priority,
+      createdAt: dbLead.created_at,
+      updatedAt: dbLead.updated_at,
+      tags: dbLead.tags ? JSON.parse(dbLead.tags) : []
     };
-    
-    leads[leadIndex] = updatedLead;
-    
+
     const response: UpdateLeadResponse = {
       success: true,
       lead: updatedLead
     };
-    
+
     res.json(response);
   } catch (error) {
     console.error("Error updating lead:", error);
@@ -188,18 +208,18 @@ export const updateLead: RequestHandler = (req, res) => {
 export const deleteLead: RequestHandler = (req, res) => {
   try {
     const leadId = req.params.id;
-    
-    const leadIndex = leads.findIndex(lead => lead.id === leadId);
-    
-    if (leadIndex === -1) {
+
+    const existingLead = LeadDB.getById(leadId);
+
+    if (!existingLead) {
       return res.status(404).json({
         success: false,
         error: "Lead não encontrado"
       });
     }
-    
-    leads.splice(leadIndex, 1);
-    
+
+    LeadDB.delete(leadId);
+
     res.json({ success: true });
   } catch (error) {
     console.error("Error deleting lead:", error);
