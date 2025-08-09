@@ -237,7 +237,7 @@ export const resendWebhookForLead: RequestHandler = async (req, res) => {
   try {
     const leadId = req.params.id;
 
-    const dbLead = LeadDB.getById(leadId);
+    const dbLead = await LeadDB.getById(leadId);
 
     if (!dbLead) {
       return res.status(404).json({
