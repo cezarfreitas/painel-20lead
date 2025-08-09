@@ -247,6 +247,38 @@ export const deleteLead: RequestHandler = (req, res) => {
 };
 
 /**
+ * POST /api/leads/:id/resend-webhook - Resend webhooks for a specific lead
+ */
+export const resendWebhookForLead: RequestHandler = async (req, res) => {
+  try {
+    const leadId = req.params.id;
+
+    const lead = leads.find(l => l.id === leadId);
+
+    if (!lead) {
+      return res.status(404).json({
+        success: false,
+        error: "Lead não encontrado"
+      });
+    }
+
+    // Trigger webhooks for this specific lead
+    await triggerWebhooks(lead);
+
+    res.json({
+      success: true,
+      message: "Webhooks reenviados com sucesso"
+    });
+  } catch (error) {
+    console.error("Error resending webhooks:", error);
+    res.status(500).json({
+      success: false,
+      error: "Erro interno do servidor"
+    });
+  }
+};
+
+/**
  * GET /api/dashboard/stats - Get dashboard statistics
  */
 export const getDashboardStats: RequestHandler = (req, res) => {
