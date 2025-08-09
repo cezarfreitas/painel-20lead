@@ -22,48 +22,37 @@ export const getLeads: RequestHandler = (req, res) => {
     const query = req.query as GetLeadsQuery;
     const page = parseInt(query.page?.toString() || "1");
     const limit = parseInt(query.limit?.toString() || "10");
-    
-    let filteredLeads = [...leads];
-    
-    // Apply filters
-    if (query.status) {
-      filteredLeads = filteredLeads.filter(lead => lead.status === query.status);
-    }
-    
-    if (query.priority) {
-      filteredLeads = filteredLeads.filter(lead => lead.priority === query.priority);
-    }
-    
-    if (query.source) {
-      filteredLeads = filteredLeads.filter(lead => lead.source === query.source);
-    }
-    
-    if (query.search) {
-      const searchTerm = query.search.toLowerCase();
-      filteredLeads = filteredLeads.filter(lead =>
-        lead.name.toLowerCase().includes(searchTerm) ||
-        lead.phone.toLowerCase().includes(searchTerm) ||
-        lead.company?.toLowerCase().includes(searchTerm) ||
-        lead.message?.toLowerCase().includes(searchTerm)
-      );
-    }
-    
-    // Sort by creation date (newest first)
-    filteredLeads.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    
-    // Pagination
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedLeads = filteredLeads.slice(startIndex, endIndex);
-    
+
+    const { leads, total } = LeadDB.getAll({
+      search: query.search,
+      page,
+      limit
+    });
+
+    // Convert database format to API format
+    const formattedLeads = leads.map((lead: any) => ({
+      id: lead.id,
+      phone: lead.phone,
+      source: lead.source,
+      name: lead.name,
+      email: lead.email,
+      company: lead.company,
+      message: lead.message,
+      status: lead.status,
+      priority: lead.priority,
+      createdAt: lead.created_at,
+      updatedAt: lead.updated_at,
+      tags: lead.tags ? JSON.parse(lead.tags) : []
+    }));
+
     const response: GetLeadsResponse = {
       success: true,
-      leads: paginatedLeads,
-      total: filteredLeads.length,
+      leads: formattedLeads,
+      total,
       page,
       limit
     };
-    
+
     res.json(response);
   } catch (error) {
     console.error("Error getting leads:", error);
