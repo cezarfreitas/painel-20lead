@@ -32,6 +32,8 @@ export const getWebhooks: RequestHandler = async (req, res) => {
       lastTriggered: wh.last_triggered,
       successCount: wh.success_count,
       failureCount: wh.failure_count,
+      customFields: wh.custom_fields ? JSON.parse(wh.custom_fields) : [],
+      sendFields: wh.send_fields ? JSON.parse(wh.send_fields) : [],
     }));
 
     const response: GetWebhooksResponse = {
