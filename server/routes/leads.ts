@@ -124,12 +124,7 @@ export const getLeads: RequestHandler = (req, res) => {
  */
 export const createLead: RequestHandler = (req, res) => {
   try {
-    // Aceitar tanto JSON quanto form data
-    const leadData = req.body as CreateLeadRequest & {
-      _pixel?: string;
-      _referrer?: string;
-      _url?: string;
-    };
+    const leadData = req.body as CreateLeadRequest;
 
     // Validate required fields
     if (!leadData.phone || !leadData.source) {
