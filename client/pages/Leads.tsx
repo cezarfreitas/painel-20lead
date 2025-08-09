@@ -58,6 +58,7 @@ export default function Leads() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [resendingLeads, setResendingLeads] = useState(new Set<string>());
   useEffect(() => {
     fetchLeads();
   }, [search]);
