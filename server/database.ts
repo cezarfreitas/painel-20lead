@@ -426,7 +426,7 @@ export const LeadDB = {
       .map((key) => `${key} = ?`)
       .join(", ");
     const values = Object.values(updates);
-    values.push(new Date().toISOString(), id);
+    values.push(new Date(), id);
 
     await db.execute(
       `UPDATE leads SET ${fields}, updated_at = ? WHERE id = ?`,
