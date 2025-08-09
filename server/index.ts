@@ -7,7 +7,8 @@ import {
   createLead,
   updateLead,
   deleteLead,
-  getDashboardStats
+  getDashboardStats,
+  trackPageview
 } from "./routes/leads";
 
 export function createServer() {
