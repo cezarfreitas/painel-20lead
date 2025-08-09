@@ -99,6 +99,16 @@ export const createLead: RequestHandler = async (req, res) => {
 
     // Create new lead
     const now = new Date().toISOString();
+
+    // Extract custom data from request body
+    const { phone, source, name, email, company, message, tags, customData, ...extraFields } = leadData;
+
+    // Combine customData with any extra fields sent directly in the request
+    const allCustomData = {
+      ...(customData || {}),
+      ...extraFields
+    };
+
     const newLeadData = {
       id: nextId.toString(),
       phone: leadData.phone,
@@ -112,6 +122,7 @@ export const createLead: RequestHandler = async (req, res) => {
       createdAt: now,
       updatedAt: now,
       tags: leadData.tags || [],
+      customData: allCustomData,
     };
 
     nextId++;
