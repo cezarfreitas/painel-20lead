@@ -207,6 +207,30 @@ let nextMockId = 4;
 // Database operations for leads
 export const LeadDB = {
   getAll: async (params: { search?: string; page?: number; limit?: number }) => {
+    if (!isConnected) {
+      // Mock data fallback
+      let filteredLeads = [...mockLeads];
+
+      if (params.search) {
+        const searchTerm = params.search.toLowerCase();
+        filteredLeads = filteredLeads.filter(lead =>
+          lead.name?.toLowerCase().includes(searchTerm) ||
+          lead.phone.toLowerCase().includes(searchTerm) ||
+          lead.company?.toLowerCase().includes(searchTerm) ||
+          lead.message?.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      filteredLeads.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+      if (params.limit) {
+        const startIndex = ((params.page || 1) - 1) * params.limit;
+        filteredLeads = filteredLeads.slice(startIndex, startIndex + params.limit);
+      }
+
+      return { leads: filteredLeads, total: filteredLeads.length };
+    }
+
     let query = 'SELECT * FROM leads';
     let countQuery = 'SELECT COUNT(*) as count FROM leads';
     const conditions: string[] = [];
@@ -229,7 +253,7 @@ export const LeadDB = {
     if (params.limit) {
       query += ' LIMIT ?';
       values.push(params.limit);
-      
+
       if (params.page && params.page > 1) {
         query += ' OFFSET ?';
         values.push((params.page - 1) * params.limit);
