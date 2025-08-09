@@ -139,34 +139,49 @@ Campos opcionais:
   };
 
   const generateFormExample = (pixelCode: string) => {
-    return `<!-- Exemplo de formulário com tracking -->
-<form onsubmit="handleFormSubmit(event)">
+    const baseUrl = window.location.origin;
+    return `<!-- Exemplo de formulário HTML que envia direto para o endpoint -->
+<form action="${baseUrl}/api/leads" method="POST">
+  <input type="hidden" name="source" value="${pixelCode}">
   <input type="text" name="name" placeholder="Nome" required>
-  <input type="email" name="email" placeholder="Email" required>
-  <input type="tel" name="phone" placeholder="WhatsApp">
+  <input type="tel" name="phone" placeholder="WhatsApp" required>
+  <input type="email" name="email" placeholder="Email">
   <input type="text" name="company" placeholder="Empresa">
   <textarea name="message" placeholder="Mensagem"></textarea>
-  <button type="submit">Enviar</button>
+  <button type="submit">Enviar Lead</button>
 </form>
 
+<!-- OU via JavaScript/AJAX -->
 <script>
-function handleFormSubmit(event) {
-  event.preventDefault();
-  var form = event.target;
-  var formData = new FormData(form);
-  
-  // Enviar lead para LeadHub
-  LeadHub.track({
-    name: formData.get('name'),
-    email: formData.get('email'),
-    phone: formData.get('phone'),
-    company: formData.get('company'),
-    message: formData.get('message')
+function enviarLead() {
+  var dadosLead = {
+    name: "João Silva",
+    phone: "+55 11 99999-9999",
+    email: "joao@email.com", // opcional
+    company: "Empresa ABC", // opcional
+    message: "Quero saber mais", // opcional
+    source: "${pixelCode}"
+  };
+
+  fetch('${baseUrl}/api/leads', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(dadosLead)
+  })
+  .then(response => response.json())
+  .then(data => {
+    if(data.success) {
+      alert('Lead enviado com sucesso!');
+    } else {
+      alert('Erro ao enviar: ' + data.error);
+    }
+  })
+  .catch(error => {
+    console.error('Erro:', error);
+    alert('Erro ao enviar lead');
   });
-  
-  // Aqui você pode adicionar sua lógica de envio normal do formulário
-  alert('Lead enviado com sucesso!');
-  form.reset();
 }
 </script>`;
   };
