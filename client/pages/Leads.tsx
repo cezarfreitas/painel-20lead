@@ -270,24 +270,6 @@ export default function Leads() {
                         </Badge>
                       </TableCell>
 
-                      <TableCell className="w-[140px]">
-                        <Select
-                          value={lead.status}
-                          onValueChange={(value) => updateLeadStatus(lead.id, value as Lead["status"])}
-                        >
-                          <SelectTrigger className="w-full h-8">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="new">Novo</SelectItem>
-                            <SelectItem value="contacted">Contatado</SelectItem>
-                            <SelectItem value="qualified">Qualificado</SelectItem>
-                            <SelectItem value="converted">Convertido</SelectItem>
-                            <SelectItem value="lost">Perdido</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-
                       <TableCell className="w-[120px]">
                         <Select
                           value={lead.priority}
