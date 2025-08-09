@@ -118,36 +118,24 @@ export default function Tracking() {
     // Aqui você poderia adicionar um toast de sucesso
   };
 
-  const generateTrackingScript = (pixelCode: string) => {
+  const generateEndpointInfo = (pixelCode: string) => {
     const baseUrl = window.location.origin;
-    return `<!-- LeadHub Tracking Pixel -->
-<script>
-(function() {
-  var pixel = '${pixelCode}';
-  var baseUrl = '${baseUrl}';
-  
-  // Função para enviar lead
-  window.LeadHub = {
-    track: function(leadData) {
-      fetch(baseUrl + '/api/leads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...leadData,
-          source: pixel,
-          _pixel: pixel,
-          _referrer: document.referrer,
-          _url: window.location.href
-        })
-      }).catch(function(e) { console.log('LeadHub tracking error:', e); });
-    }
-  };
-  
-  // Tracking automático de pageview
-  var img = new Image();
-  img.src = baseUrl + '/api/tracking/pageview?pixel=' + pixel + '&url=' + encodeURIComponent(window.location.href);
-})();
-</script>`;
+    return `Endpoint para envio de leads:
+
+POST ${baseUrl}/api/leads
+
+Headers necessários:
+Content-Type: application/json
+
+Campos obrigatórios:
+- name: string (nome do lead)
+- source: string (use "${pixelCode}" para identificar este site)
+
+Campos opcionais:
+- phone: string (WhatsApp)
+- email: string (email do lead)
+- company: string (empresa)
+- message: string (mensagem)`;
   };
 
   const generateFormExample = (pixelCode: string) => {
