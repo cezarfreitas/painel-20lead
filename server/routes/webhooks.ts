@@ -123,7 +123,7 @@ export const createWebhook: RequestHandler = async (req, res) => {
 /**
  * PUT /api/webhooks/:id - Update a webhook
  */
-export const updateWebhook: RequestHandler = (req, res) => {
+export const updateWebhook: RequestHandler = async (req, res) => {
   try {
     const webhookId = req.params.id;
     const updates = req.body as UpdateWebhookRequest;
