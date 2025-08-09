@@ -1,114 +1,132 @@
-import Database from 'better-sqlite3';
-import path from 'path';
+import mysql from 'mysql2/promise';
 
-// Initialize SQLite database
-const dbPath = path.join(process.cwd(), 'leadhub.db');
-const db = new Database(dbPath);
+let db: mysql.Connection;
 
-// Enable foreign keys
-db.pragma('foreign_keys = ON');
+// Initialize MySQL connection
+async function initializeDatabase() {
+  try {
+    const connectionUrl = process.env.MYSQL_DB || process.env.DATABASE_URL;
+    
+    if (!connectionUrl) {
+      throw new Error('MYSQL_DB environment variable is required');
+    }
 
-// Create tables
-function initializeDatabase() {
+    console.log('Connecting to MySQL database...');
+    db = await mysql.createConnection(connectionUrl);
+    
+    console.log('Connected to MySQL database successfully');
+
+    // Create tables
+    await createTables();
+    await insertSampleData();
+    
+    console.log('Database initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize database:', error);
+    throw error;
+  }
+}
+
+async function createTables() {
   // Create leads table
-  db.exec(`
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS leads (
-      id TEXT PRIMARY KEY,
-      phone TEXT NOT NULL,
-      source TEXT NOT NULL,
-      name TEXT,
-      email TEXT,
-      company TEXT,
+      id VARCHAR(50) PRIMARY KEY,
+      phone VARCHAR(20) NOT NULL,
+      source VARCHAR(255) NOT NULL,
+      name VARCHAR(255),
+      email VARCHAR(255),
+      company VARCHAR(255),
       message TEXT,
-      status TEXT DEFAULT 'new',
-      priority TEXT DEFAULT 'medium',
-      created_at TEXT NOT NULL,
-      updated_at TEXT NOT NULL,
-      tags TEXT DEFAULT '[]'
+      status ENUM('new', 'contacted', 'qualified', 'converted', 'lost') DEFAULT 'new',
+      priority ENUM('low', 'medium', 'high') DEFAULT 'medium',
+      created_at DATETIME NOT NULL,
+      updated_at DATETIME NOT NULL,
+      tags JSON
     )
   `);
 
   // Create webhooks table
-  db.exec(`
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS webhooks (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
+      id VARCHAR(50) PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
       url TEXT NOT NULL,
-      is_active INTEGER DEFAULT 1,
-      created_at TEXT NOT NULL,
-      updated_at TEXT NOT NULL,
-      last_triggered TEXT,
-      success_count INTEGER DEFAULT 0,
-      failure_count INTEGER DEFAULT 0
+      is_active BOOLEAN DEFAULT true,
+      created_at DATETIME NOT NULL,
+      updated_at DATETIME NOT NULL,
+      last_triggered DATETIME,
+      success_count INT DEFAULT 0,
+      failure_count INT DEFAULT 0
     )
   `);
 
   // Create webhook_logs table
-  db.exec(`
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS webhook_logs (
-      id TEXT PRIMARY KEY,
-      webhook_id TEXT NOT NULL,
-      lead_id TEXT NOT NULL,
+      id VARCHAR(50) PRIMARY KEY,
+      webhook_id VARCHAR(50) NOT NULL,
+      lead_id VARCHAR(50) NOT NULL,
       url TEXT NOT NULL,
-      status TEXT NOT NULL,
-      http_status INTEGER,
+      status ENUM('success', 'failed', 'retrying') NOT NULL,
+      http_status INT,
       response TEXT,
       error TEXT,
-      attempt INTEGER NOT NULL,
-      max_attempts INTEGER NOT NULL,
-      created_at TEXT NOT NULL,
-      next_retry TEXT,
-      FOREIGN KEY (webhook_id) REFERENCES webhooks (id),
-      FOREIGN KEY (lead_id) REFERENCES leads (id)
+      attempt INT NOT NULL,
+      max_attempts INT NOT NULL,
+      created_at DATETIME NOT NULL,
+      next_retry DATETIME,
+      FOREIGN KEY (webhook_id) REFERENCES webhooks (id) ON DELETE CASCADE,
+      FOREIGN KEY (lead_id) REFERENCES leads (id) ON DELETE CASCADE
     )
   `);
-
-  console.log('Database initialized successfully');
 }
 
 // Insert sample data if tables are empty
-function insertSampleData() {
-  const leadsCount = db.prepare('SELECT COUNT(*) as count FROM leads').get() as { count: number };
+async function insertSampleData() {
+  const [leadsResult] = await db.execute('SELECT COUNT(*) as count FROM leads') as any;
   
-  if (leadsCount.count === 0) {
+  if (leadsResult[0].count === 0) {
     console.log('Inserting sample leads...');
     
-    const insertLead = db.prepare(`
+    const now = new Date();
+    const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
+
+    await db.execute(`
       INSERT INTO leads (id, phone, source, name, company, message, status, priority, created_at, updated_at, tags)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    const now = new Date().toISOString();
-    const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString();
-
-    insertLead.run('1', '+55 11 99999-9999', 'landing-page-produtos', 'João Silva', 'Tech Solutions Ltd', 'Interessado em saber mais sobre os serviços', 'new', 'high', twoDaysAgo, twoDaysAgo, '["produto", "premium"]');
-    insertLead.run('2', '+55 21 88888-8888', 'formulario-contato', 'Maria Santos', 'Inovação & Co', 'Gostaria de agendar uma demonstração', 'contacted', 'medium', dayAgo, dayAgo, '["demo", "empresarial"]');
-    insertLead.run('3', '+55 11 99999-9999', 'webinar-growth', 'Pedro Costa', 'StartupXYZ', 'Preciso de uma solução escalável', 'qualified', 'high', now, now, '["startup", "growth"]');
+      VALUES 
+        ('1', '+55 11 99999-9999', 'landing-page-produtos', 'João Silva', 'Tech Solutions Ltd', 'Interessado em saber mais sobre os serviços', 'new', 'high', ?, ?, ?),
+        ('2', '+55 21 88888-8888', 'formulario-contato', 'Maria Santos', 'Inovação & Co', 'Gostaria de agendar uma demonstração', 'contacted', 'medium', ?, ?, ?),
+        ('3', '+55 11 99999-9999', 'webinar-growth', 'Pedro Costa', 'StartupXYZ', 'Preciso de uma solução escalável', 'qualified', 'high', ?, ?, ?)
+    `, [
+      twoDaysAgo, twoDaysAgo, JSON.stringify(["produto", "premium"]),
+      dayAgo, dayAgo, JSON.stringify(["demo", "empresarial"]), 
+      now, now, JSON.stringify(["startup", "growth"])
+    ]);
   }
 
-  const webhooksCount = db.prepare('SELECT COUNT(*) as count FROM webhooks').get() as { count: number };
+  const [webhooksResult] = await db.execute('SELECT COUNT(*) as count FROM webhooks') as any;
   
-  if (webhooksCount.count === 0) {
+  if (webhooksResult[0].count === 0) {
     console.log('Inserting sample webhooks...');
     
-    const insertWebhook = db.prepare(`
+    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+    const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
+
+    await db.execute(`
       INSERT INTO webhooks (id, name, url, is_active, created_at, updated_at, last_triggered, success_count, failure_count)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-    const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
-    const hourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-
-    insertWebhook.run('wh_001', 'Sistema CRM Principal', 'https://api.meucrm.com/webhooks/leads', 1, weekAgo, weekAgo, hourAgo, 45, 2);
-    insertWebhook.run('wh_002', 'Sistema de Email Marketing', 'https://emailmarketing.com/api/contacts', 1, threeDaysAgo, threeDaysAgo, hourAgo, 23, 0);
+      VALUES 
+        ('wh_001', 'Sistema CRM Principal', 'https://api.meucrm.com/webhooks/leads', true, ?, ?, ?, 45, 2),
+        ('wh_002', 'Sistema de Email Marketing', 'https://emailmarketing.com/api/contacts', true, ?, ?, ?, 23, 0)
+    `, [weekAgo, weekAgo, hourAgo, threeDaysAgo, threeDaysAgo, hourAgo]);
   }
 }
 
 // Database operations for leads
 export const LeadDB = {
-  getAll: (params: { search?: string; page?: number; limit?: number }) => {
+  getAll: async (params: { search?: string; page?: number; limit?: number }) => {
     let query = 'SELECT * FROM leads';
     let countQuery = 'SELECT COUNT(*) as count FROM leads';
     const conditions: string[] = [];
@@ -138,19 +156,18 @@ export const LeadDB = {
       }
     }
 
-    const leads = db.prepare(query).all(...values);
-    const total = (db.prepare(countQuery).get(...values.slice(0, -2)) as any)?.count || 0;
+    const [leads] = await db.execute(query, values);
+    const [totalResult] = await db.execute(countQuery, values.slice(0, values.length - (params.limit ? (params.page && params.page > 1 ? 2 : 1) : 0))) as any;
+    const total = totalResult[0]?.count || 0;
 
     return { leads, total };
   },
 
-  create: (lead: any) => {
-    const stmt = db.prepare(`
+  create: async (lead: any) => {
+    await db.execute(`
       INSERT INTO leads (id, phone, source, name, email, company, message, status, priority, created_at, updated_at, tags)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-    
-    stmt.run(
+    `, [
       lead.id,
       lead.phone,
       lead.source,
@@ -163,112 +180,114 @@ export const LeadDB = {
       lead.createdAt,
       lead.updatedAt,
       JSON.stringify(lead.tags || [])
-    );
+    ]);
     
-    return db.prepare('SELECT * FROM leads WHERE id = ?').get(lead.id);
+    const [result] = await db.execute('SELECT * FROM leads WHERE id = ?', [lead.id]);
+    return (result as any[])[0];
   },
 
-  getById: (id: string) => {
-    return db.prepare('SELECT * FROM leads WHERE id = ?').get(id);
+  getById: async (id: string) => {
+    const [result] = await db.execute('SELECT * FROM leads WHERE id = ?', [id]);
+    return (result as any[])[0];
   },
 
-  update: (id: string, updates: any) => {
+  update: async (id: string, updates: any) => {
     const fields = Object.keys(updates).map(key => `${key} = ?`).join(', ');
     const values = Object.values(updates);
-    values.push(id);
+    values.push(new Date().toISOString(), id);
     
-    db.prepare(`UPDATE leads SET ${fields}, updated_at = ? WHERE id = ?`)
-      .run(...values, new Date().toISOString());
+    await db.execute(`UPDATE leads SET ${fields}, updated_at = ? WHERE id = ?`, values);
     
-    return db.prepare('SELECT * FROM leads WHERE id = ?').get(id);
+    const [result] = await db.execute('SELECT * FROM leads WHERE id = ?', [id]);
+    return (result as any[])[0];
   },
 
-  delete: (id: string) => {
-    return db.prepare('DELETE FROM leads WHERE id = ?').run(id);
+  delete: async (id: string) => {
+    return await db.execute('DELETE FROM leads WHERE id = ?', [id]);
   }
 };
 
 // Database operations for webhooks
 export const WebhookDB = {
-  getAll: () => {
-    return db.prepare('SELECT * FROM webhooks ORDER BY created_at DESC').all();
+  getAll: async () => {
+    const [result] = await db.execute('SELECT * FROM webhooks ORDER BY created_at DESC');
+    return result;
   },
 
-  create: (webhook: any) => {
-    const stmt = db.prepare(`
+  create: async (webhook: any) => {
+    await db.execute(`
       INSERT INTO webhooks (id, name, url, is_active, created_at, updated_at, success_count, failure_count)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-    
-    stmt.run(
+    `, [
       webhook.id,
       webhook.name,
       webhook.url,
-      webhook.isActive ? 1 : 0,
+      webhook.isActive,
       webhook.createdAt,
       webhook.updatedAt,
       webhook.successCount || 0,
       webhook.failureCount || 0
-    );
+    ]);
     
-    return db.prepare('SELECT * FROM webhooks WHERE id = ?').get(webhook.id);
+    const [result] = await db.execute('SELECT * FROM webhooks WHERE id = ?', [webhook.id]);
+    return (result as any[])[0];
   },
 
-  getById: (id: string) => {
-    return db.prepare('SELECT * FROM webhooks WHERE id = ?').get(id);
+  getById: async (id: string) => {
+    const [result] = await db.execute('SELECT * FROM webhooks WHERE id = ?', [id]);
+    return (result as any[])[0];
   },
 
-  update: (id: string, updates: any) => {
+  update: async (id: string, updates: any) => {
     const dbUpdates: any = { ...updates };
     if ('isActive' in dbUpdates) {
-      dbUpdates.is_active = dbUpdates.isActive ? 1 : 0;
+      dbUpdates.is_active = dbUpdates.isActive;
       delete dbUpdates.isActive;
     }
     
     const fields = Object.keys(dbUpdates).map(key => `${key} = ?`).join(', ');
     const values = Object.values(dbUpdates);
-    values.push(id);
+    values.push(new Date().toISOString(), id);
     
-    db.prepare(`UPDATE webhooks SET ${fields}, updated_at = ? WHERE id = ?`)
-      .run(...values, new Date().toISOString());
+    await db.execute(`UPDATE webhooks SET ${fields}, updated_at = ? WHERE id = ?`, values);
     
-    return db.prepare('SELECT * FROM webhooks WHERE id = ?').get(id);
+    const [result] = await db.execute('SELECT * FROM webhooks WHERE id = ?', [id]);
+    return (result as any[])[0];
   },
 
-  delete: (id: string) => {
-    return db.prepare('DELETE FROM webhooks WHERE id = ?').run(id);
+  delete: async (id: string) => {
+    return await db.execute('DELETE FROM webhooks WHERE id = ?', [id]);
   },
 
-  getActive: () => {
-    return db.prepare('SELECT * FROM webhooks WHERE is_active = 1').all();
+  getActive: async () => {
+    const [result] = await db.execute('SELECT * FROM webhooks WHERE is_active = true');
+    return result;
   },
 
-  incrementSuccess: (id: string) => {
-    db.prepare(`
+  incrementSuccess: async (id: string) => {
+    await db.execute(`
       UPDATE webhooks 
       SET success_count = success_count + 1, last_triggered = ?
       WHERE id = ?
-    `).run(new Date().toISOString(), id);
+    `, [new Date(), id]);
   },
 
-  incrementFailure: (id: string) => {
-    db.prepare(`
+  incrementFailure: async (id: string) => {
+    await db.execute(`
       UPDATE webhooks 
       SET failure_count = failure_count + 1
       WHERE id = ?
-    `).run(id);
+    `, [id]);
   }
 };
 
 // Database operations for webhook logs
 export const WebhookLogDB = {
-  create: (log: any) => {
-    const stmt = db.prepare(`
+  create: async (log: any) => {
+    await db.execute(`
       INSERT INTO webhook_logs (id, webhook_id, lead_id, url, status, http_status, response, error, attempt, max_attempts, created_at, next_retry)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-    
-    stmt.run(
+    `, [
       log.id,
       log.webhookId,
       log.leadId,
@@ -281,20 +300,20 @@ export const WebhookLogDB = {
       log.maxAttempts,
       log.createdAt,
       log.nextRetry || null
-    );
+    ]);
   },
 
-  getRecent: (limit: number = 100) => {
-    return db.prepare(`
+  getRecent: async (limit: number = 100) => {
+    const [result] = await db.execute(`
       SELECT * FROM webhook_logs 
       ORDER BY created_at DESC 
       LIMIT ?
-    `).all(limit);
+    `, [limit]);
+    return result;
   }
 };
 
 // Initialize database on import
-initializeDatabase();
-insertSampleData();
+initializeDatabase().catch(console.error);
 
 export default db;
