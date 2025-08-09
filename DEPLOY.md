@@ -24,7 +24,7 @@ docker build -t leadhub .
 # Executar (com MySQL externo)
 docker run -d \
   --name leadhub \
-  -p 8080:8080 \
+  -p 80:80 \
   -e MYSQL_DB="mysql://user:pass@host:3306/database" \
   leadhub
 ```
