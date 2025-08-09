@@ -215,7 +215,7 @@ export const deleteWebhook: RequestHandler = async (req, res) => {
  * Function to trigger webhooks when a lead is created
  */
 export const triggerWebhooks = async (lead: Lead): Promise<void> => {
-  const dbWebhooks = WebhookDB.getActive();
+  const dbWebhooks = await WebhookDB.getActive();
 
   if (dbWebhooks.length === 0) {
     console.log("No active webhooks to trigger");
@@ -223,11 +223,11 @@ export const triggerWebhooks = async (lead: Lead): Promise<void> => {
   }
 
   // Convert to API format
-  const activeWebhooks = dbWebhooks.map((wh: any) => ({
+  const activeWebhooks = (dbWebhooks as any[]).map((wh: any) => ({
     id: wh.id,
     name: wh.name,
     url: wh.url,
-    isActive: wh.is_active === 1,
+    isActive: wh.is_active === 1 || wh.is_active === true,
     createdAt: wh.created_at,
     updatedAt: wh.updated_at,
     lastTriggered: wh.last_triggered,
