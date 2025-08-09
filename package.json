@@ -16,6 +16,8 @@
     "build:client": "vite build",
     "build:server": "vite build --config vite.config.server.ts",
     "start": "node dist/server/production.mjs",
+    "start:alt": "node server/start-production.js",
+    "start:dev": "node server/production.ts",
     "test": "vitest --run",
     "format.fix": "prettier --write .",
     "typecheck": "tsc"
