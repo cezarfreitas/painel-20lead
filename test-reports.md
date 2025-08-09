@@ -5,33 +5,37 @@
 A página de Relatórios agora possui gráficos dinâmicos baseados nos dados reais dos leads:
 
 ### 📈 Gráfico de Fontes (Sources)
+
 - **Tipo**: Gráfico de barras
 - **Dados**: Quantidade de leads por fonte de origem
 - **Exemplos de fontes**:
   - Landing Page Lojistas
-  - Formulário de Contato 
+  - Formulário de Contato
   - Webinar Growth
   - Google Ads
   - Facebook Ads
   - Indicação
 
 ### 📊 Gráfico de Status
+
 - **Tipo**: Gráfico de pizza
 - **Dados**: Distribuição de leads por status
 - **Status disponíveis**:
   - Novos
-  - Contatados  
+  - Contatados
   - Qualificados
   - Convertidos
   - Perdidos
 
 ### 📋 Cards de Estatísticas
+
 - Total de Leads
 - Leads Novos
 - Leads Convertidos
 - Taxa de Conversão (%)
 
 ### 🕐 Atualização Automática
+
 - Os gráficos são atualizados automaticamente a cada 30 segundos
 - Dados em tempo real conectados ao banco de dados
 
@@ -39,16 +43,17 @@ A página de Relatórios agora possui gráficos dinâmicos baseados nos dados re
 
 1. **Acesse a página Relatórios**: `/reports`
 2. **Crie leads com diferentes fontes**:
+
    ```bash
    # Exemplo: Lead da Landing Page
    curl -X POST http://localhost:3000/api/leads \
      -H "Content-Type: application/json" \
      -d '{
        "name": "João Silva",
-       "phone": "11999999999", 
+       "phone": "11999999999",
        "source": "Landing Page Lojistas"
      }'
-   
+
    # Exemplo: Lead do Google Ads
    curl -X POST http://localhost:3000/api/leads \
      -H "Content-Type: application/json" \
@@ -77,6 +82,7 @@ A página de Relatórios agora possui gráficos dinâmicos baseados nos dados re
 ## 📊 Dados de Exemplo
 
 O sistema já vem com dados de exemplo que mostram:
+
 - 3 leads com diferentes fontes
 - Status variados (new, contacted, qualified)
 - Dados customizados (budget, interesse, etc.)

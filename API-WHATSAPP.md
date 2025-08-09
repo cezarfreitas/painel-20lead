@@ -7,10 +7,12 @@ A API foi ajustada para aceitar **apenas `whatsapp` como campo obrigatório**, c
 ### 🔧 Mudanças na Validação
 
 **Antes:**
+
 - `phone` e `source` obrigatórios
 - Erro se qualquer um faltasse
 
 **Agora:**
+
 - **Apenas `whatsapp` obrigatório**
 - `origem` é mapeado automaticamente para `source`
 - Se `source` não existir, usa "website" como padrão
@@ -21,14 +23,15 @@ A API mapeia automaticamente os campos:
 
 ```json
 {
-  "whatsapp": "11989882867",    // → phone (interno)
-  "origem": "Landing Page"      // → source (interno)
+  "whatsapp": "11989882867", // → phone (interno)
+  "origem": "Landing Page" // → source (interno)
 }
 ```
 
 ### ✅ Exemplo de Uso
 
 **JSON Mínimo (apenas whatsapp):**
+
 ```json
 {
   "whatsapp": "11989882867"
@@ -36,24 +39,26 @@ A API mapeia automaticamente os campos:
 ```
 
 **JSON Completo (como seu exemplo):**
+
 ```json
 {
-   "name":"cezar",
-   "whatsapp":"11989882867",
-   "origem":"Landing Page Lojistas",
-   "marca":"Ecko",
-   "campaign_type":"Lead Generation",
-   "utm_source":null,
-   "utm_campaign":null,
-   "engagement_score":7
+  "name": "cezar",
+  "whatsapp": "11989882867",
+  "origem": "Landing Page Lojistas",
+  "marca": "Ecko",
+  "campaign_type": "Lead Generation",
+  "utm_source": null,
+  "utm_campaign": null,
+  "engagement_score": 7
 }
 ```
 
 ### 🔄 Compatibilidade
 
 A API ainda aceita os campos antigos para compatibilidade:
+
 - `phone` → funciona
-- `whatsapp` → **preferido**  
+- `whatsapp` → **preferido**
 - `source` → funciona
 - `origem` → **preferido**
 
@@ -73,6 +78,7 @@ INSERT INTO leads (
 ### 🚀 Pronto para Uso
 
 Sua landing page pode enviar exatamente o JSON que você mostrou:
+
 - ✅ `whatsapp` será aceito como obrigatório
 - ✅ `origem` será mapeado para source
 - ✅ Todos os outros campos vão para customData
