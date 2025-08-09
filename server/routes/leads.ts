@@ -133,7 +133,7 @@ export const createLead: RequestHandler = async (req, res) => {
     };
 
     const newLeadData = {
-      id: nextId.toString(),
+      id: generateLeadId(),
       phone: whatsapp, // Use mapped whatsapp field (validated above)
       source: source, // Use mapped source field (has fallback)
       name: name,
