@@ -13,7 +13,8 @@ import { triggerWebhooks } from "./webhooks";
 import { LeadDB } from "../database";
 
 // Use timestamp-based IDs to avoid conflicts
-const generateLeadId = () => `lead_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+const generateLeadId = () =>
+  `lead_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
 /**
  * GET /api/leads - Get all leads with optional filtering
@@ -87,7 +88,10 @@ export const getLeads: RequestHandler = async (req, res) => {
  */
 export const createLead: RequestHandler = async (req, res) => {
   try {
-    console.log("🔍 [CREATE LEAD] Request body:", JSON.stringify(req.body, null, 2));
+    console.log(
+      "🔍 [CREATE LEAD] Request body:",
+      JSON.stringify(req.body, null, 2),
+    );
 
     const leadData = req.body as CreateLeadRequest;
 
@@ -148,7 +152,10 @@ export const createLead: RequestHandler = async (req, res) => {
       customData: allCustomData,
     };
 
-    console.log("💾 [CREATE LEAD] About to create lead with data:", JSON.stringify(newLeadData, null, 2));
+    console.log(
+      "💾 [CREATE LEAD] About to create lead with data:",
+      JSON.stringify(newLeadData, null, 2),
+    );
 
     const dbLead = await LeadDB.create(newLeadData);
 
@@ -216,7 +223,10 @@ export const createLead: RequestHandler = async (req, res) => {
     res.status(201).json(response);
   } catch (error) {
     console.error("❌ [CREATE LEAD] Error creating lead:", error);
-    console.error("❌ [CREATE LEAD] Error stack:", error instanceof Error ? error.stack : 'No stack trace');
+    console.error(
+      "❌ [CREATE LEAD] Error stack:",
+      error instanceof Error ? error.stack : "No stack trace",
+    );
     const response: CreateLeadResponse = {
       success: false,
       error: "Erro interno do servidor",

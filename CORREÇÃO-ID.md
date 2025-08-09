@@ -7,15 +7,17 @@ Possível problema com IDs duplicados usando `nextId` incremental.
 ## ✅ Solução Implementada
 
 ### Antes:
+
 ```javascript
 let nextId = 4;
 // ...
 id: nextId.toString(),
-// ...
-nextId++;
+  // ...
+  nextId++;
 ```
 
 ### Agora:
+
 ```javascript
 const generateLeadId = () => `lead_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 // ...
@@ -39,9 +41,9 @@ Agora o mesmo JSON deve funcionar:
 
 ```json
 {
-   "name":"cezar",
-   "whatsapp":"11989882867",
-   "origem":"Landing Page Lojistas"
+  "name": "cezar",
+  "whatsapp": "11989882867",
+  "origem": "Landing Page Lojistas"
 }
 ```
 

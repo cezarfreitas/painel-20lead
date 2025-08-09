@@ -7,6 +7,7 @@ O usuário está recebendo erro "Erro interno do servidor" ao tentar criar leads
 ## 🔧 Logs Adicionados
 
 Adicionei logs detalhados em:
+
 - `server/routes/leads.ts` - Função `createLead`
 - `server/database.ts` - Função `create` do LeadDB
 
@@ -18,10 +19,10 @@ Criado endpoint `/api/test-lead` para debug específico.
 
 ```json
 {
-   "name":"cezar",
-   "whatsapp":"11989882867",
-   "origem":"Landing Page Lojistas",
-   "marca":"Ecko"
+  "name": "cezar",
+  "whatsapp": "11989882867",
+  "origem": "Landing Page Lojistas",
+  "marca": "Ecko"
 }
 ```
 
