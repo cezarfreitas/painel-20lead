@@ -186,15 +186,6 @@ export default function Leads() {
                         </div>
                       </TableCell>
 
-                      <TableCell className="w-[150px]">
-                        {lead.company && (
-                          <div className="flex items-center gap-2">
-                            <Building className="h-3 w-3" />
-                            <span className="truncate">{lead.company}</span>
-                          </div>
-                        )}
-                      </TableCell>
-
                       <TableCell className="w-[120px]">
                         <Badge variant="outline" className="text-xs">
                           {lead.source}
@@ -208,21 +199,42 @@ export default function Leads() {
                         </div>
                       </TableCell>
 
-                      <TableCell className="w-[50px]">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuItem>Ver detalhes</DropdownMenuItem>
-                            <DropdownMenuItem>Enviar email</DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive">
-                              Excluir
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                      <TableCell className="w-[120px]">
+                        <div className="flex items-center gap-2">
+                          {getWebhookStatus(lead.id) === "success" && (
+                            <>
+                              <CheckCircle className="h-3 w-3 text-green-500" />
+                              <span className="text-xs text-green-600">Enviado</span>
+                            </>
+                          )}
+                          {getWebhookStatus(lead.id) === "failed" && (
+                            <>
+                              <XCircle className="h-3 w-3 text-red-500" />
+                              <span className="text-xs text-red-600">Falhou</span>
+                            </>
+                          )}
+                          {getWebhookStatus(lead.id) === "pending" && (
+                            <>
+                              <Clock className="h-3 w-3 text-yellow-500" />
+                              <span className="text-xs text-yellow-600">Pendente</span>
+                            </>
+                          )}
+                        </div>
+                      </TableCell>
+
+                      <TableCell className="w-[100px]">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => resendWebhook(lead.id)}
+                          disabled={resendingLeads.has(lead.id)}
+                        >
+                          {resendingLeads.has(lead.id) ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Send className="h-4 w-4" />
+                          )}
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
