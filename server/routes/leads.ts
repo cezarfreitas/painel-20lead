@@ -12,7 +12,8 @@ import {
 import { triggerWebhooks } from "./webhooks";
 import { LeadDB } from "../database";
 
-let nextId = 4;
+// Use timestamp-based IDs to avoid conflicts
+const generateLeadId = () => `lead_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
 /**
  * GET /api/leads - Get all leads with optional filtering
