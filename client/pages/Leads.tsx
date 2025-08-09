@@ -194,7 +194,6 @@ export default function Leads() {
                     <TableHead className="w-[200px]">WhatsApp</TableHead>
                     <TableHead className="w-[150px]">Empresa</TableHead>
                     <TableHead className="w-[120px]">Origem</TableHead>
-                    <TableHead className="w-[120px]">Prioridade</TableHead>
                     <TableHead className="w-[140px]">Data</TableHead>
                     <TableHead className="w-[50px]"></TableHead>
                   </TableRow>
