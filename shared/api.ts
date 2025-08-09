@@ -16,12 +16,12 @@ export interface DemoResponse {
  */
 export interface Lead {
   id: string;
-  name: string;
   phone: string; // WhatsApp obrigatório
+  source: string; // Origem obrigatória
+  name?: string; // Nome opcional
   email?: string; // Email opcional
   company?: string;
   message?: string;
-  source: string; // Which page/form the lead came from
   status: "new" | "contacted" | "qualified" | "converted" | "lost";
   priority: "low" | "medium" | "high";
   createdAt: string;
