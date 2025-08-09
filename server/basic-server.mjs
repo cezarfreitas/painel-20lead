@@ -14,11 +14,11 @@ console.log(`🚀 LeadHub Basic Server starting on port ${port}`);
 
 // Health check
 app.get("/api/health", (req, res) => {
-  res.json({ 
-    status: "ok", 
+  res.json({
+    status: "ok",
     timestamp: new Date().toISOString(),
     port: port,
-    service: "LeadHub Basic"
+    service: "LeadHub Basic",
   });
 });
 
@@ -42,10 +42,10 @@ app.get("/api/leads", (req, res) => {
         phone: "+55 11 99999-9999",
         source: "test",
         name: "Test Lead",
-        createdAt: new Date().toISOString()
-      }
+        createdAt: new Date().toISOString(),
+      },
     ],
-    total: 1
+    total: 1,
   });
 });
 
@@ -53,7 +53,7 @@ app.get("/api/leads", (req, res) => {
 app.get("/api/webhooks", (req, res) => {
   res.json({
     success: true,
-    webhooks: []
+    webhooks: [],
   });
 });
 
@@ -64,23 +64,23 @@ app.get("/api/*", (req, res) => {
 
 // Default route
 app.get("*", (req, res) => {
-  res.json({ 
-    message: "LeadHub Basic API is running", 
+  res.json({
+    message: "LeadHub Basic API is running",
     endpoints: {
       health: "/api/health",
       ping: "/api/ping",
       demo: "/api/demo",
       leads: "/api/leads",
-      webhooks: "/api/webhooks"
+      webhooks: "/api/webhooks",
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
 // Error handling
 app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(500).json({ error: 'Internal server error' });
+  console.error("Error:", err);
+  res.status(500).json({ error: "Internal server error" });
 });
 
 app.listen(port, () => {

@@ -7,6 +7,7 @@ O erro `require is not defined in ES module scope` foi corrigido criando múltip
 ## 🚀 **Configuração no EasyPanel**
 
 ### Opção 1: Script Básico (Mais Confiável)
+
 ```bash
 npm run start:alt
 # ou
@@ -14,38 +15,43 @@ npm run start:basic
 ```
 
 ### Opção 2: Script Principal (Recomendado)
+
 ```bash
 npm start
 ```
 
 ### Opção 3: Script Robusto (Com Fallbacks)
+
 ```bash
 npm run start:robust
 ```
 
 ## 📝 **Scripts Disponíveis**
 
-| Script | Comando | Descrição |
-|--------|---------|-----------|
-| `start` | `npx tsx server/simple-production.ts` | **Recomendado** - Servidor simplificado |
-| `start:alt` | `node server/basic-server.mjs` | **Mais confiável** - JavaScript puro |
-| `start:basic` | `node server/basic-server.mjs` | Mesmo que start:alt |
-| `start:robust` | `node server/start-production.mjs` | Com múltiplos fallbacks |
-| `start:full` | `npx tsx server/production.ts` | Servidor completo |
+| Script         | Comando                               | Descrição                               |
+| -------------- | ------------------------------------- | --------------------------------------- |
+| `start`        | `npx tsx server/simple-production.ts` | **Recomendado** - Servidor simplificado |
+| `start:alt`    | `node server/basic-server.mjs`        | **Mais confiável** - JavaScript puro    |
+| `start:basic`  | `node server/basic-server.mjs`        | Mesmo que start:alt                     |
+| `start:robust` | `node server/start-production.mjs`    | Com múltiplos fallbacks                 |
+| `start:full`   | `npx tsx server/production.ts`        | Servidor completo                       |
 
 ## 🎯 **Configuração Recomendada para EasyPanel**
 
 ### 1. **Build Command**
+
 ```bash
 npm install
 ```
 
 ### 2. **Start Command**
+
 ```bash
 npm run start:alt
 ```
 
 ### 3. **Environment Variables**
+
 ```bash
 NODE_ENV=production
 PORT=80
@@ -53,6 +59,7 @@ MYSQL_DB=mysql://user:pass@host:3306/database
 ```
 
 ### 4. **Port**
+
 ```
 80
 ```
@@ -62,11 +69,13 @@ MYSQL_DB=mysql://user:pass@host:3306/database
 ### Se `start:alt` falhar, tente em ordem:
 
 1. **Básico (JavaScript puro)**:
+
    ```bash
    npm run start:basic
    ```
 
 2. **Principal (com tsx)**:
+
    ```bash
    npm start
    ```
@@ -95,11 +104,13 @@ node server/basic-server.mjs
 ## 🏥 **Health Check**
 
 Após deploy, teste:
+
 ```bash
 curl http://your-app.easypanel.host/api/health
 ```
 
 Resposta esperada:
+
 ```json
 {
   "status": "ok",
@@ -112,7 +123,7 @@ Resposta esperada:
 ## 📊 **Endpoints Disponíveis**
 
 - `GET /api/health` - Health check
-- `GET /api/ping` - Ping test  
+- `GET /api/ping` - Ping test
 - `GET /api/demo` - Demo endpoint
 - `GET /api/leads` - Leads API
 - `GET /api/webhooks` - Webhooks API
