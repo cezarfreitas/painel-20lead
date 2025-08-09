@@ -10,6 +10,13 @@ import {
   getDashboardStats,
   trackPageview
 } from "./routes/leads";
+import {
+  getWebhooks,
+  createWebhook,
+  updateWebhook,
+  deleteWebhook,
+  getWebhookLogs
+} from "./routes/webhooks";
 
 export function createServer() {
   const app = express();
