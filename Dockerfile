@@ -44,5 +44,5 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s \
   CMD curl -f http://localhost:80/api/health || exit 1
 
-# Start
-CMD ["npm", "start"]
+# Start with fallback
+CMD ["npm", "run", "start:alt"]
