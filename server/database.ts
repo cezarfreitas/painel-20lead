@@ -515,6 +515,11 @@ export const WebhookDB = {
 // Database operations for webhook logs
 export const WebhookLogDB = {
   create: async (log: any) => {
+    if (!isConnected) {
+      console.log("WebhookLogDB: Using mock mode - log not persisted");
+      return;
+    }
+
     await db.execute(
       `
       INSERT INTO webhook_logs (id, webhook_id, lead_id, url, status, http_status, response, error, attempt, max_attempts, created_at, next_retry)
