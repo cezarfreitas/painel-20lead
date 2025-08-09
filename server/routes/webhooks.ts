@@ -106,6 +106,8 @@ export const createWebhook: RequestHandler = async (req, res) => {
       lastTriggered: dbWebhook.last_triggered,
       successCount: dbWebhook.success_count,
       failureCount: dbWebhook.failure_count,
+      customFields: dbWebhook.custom_fields ? JSON.parse(dbWebhook.custom_fields) : [],
+      sendFields: dbWebhook.send_fields ? JSON.parse(dbWebhook.send_fields) : [],
     };
 
     const response: WebhookResponse = {
