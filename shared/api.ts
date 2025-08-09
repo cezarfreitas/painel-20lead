@@ -27,6 +27,7 @@ export interface Lead {
   createdAt: string;
   updatedAt: string;
   tags: string[];
+  customData?: Record<string, any>; // For dynamic custom fields
 }
 
 /**
