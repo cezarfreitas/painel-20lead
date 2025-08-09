@@ -341,8 +341,8 @@ export const LeadDB = {
         lead.message || null,
         lead.status || "new",
         lead.priority || "medium",
-        lead.createdAt,
-        lead.updatedAt,
+        new Date(lead.createdAt),
+        new Date(lead.updatedAt),
         JSON.stringify(lead.tags || []),
       ],
     );
