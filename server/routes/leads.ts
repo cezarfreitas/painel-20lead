@@ -127,8 +127,8 @@ export const createLead: RequestHandler = async (req, res) => {
 
     const newLeadData = {
       id: nextId.toString(),
-      phone: leadData.phone,
-      source: leadData.source,
+      phone: whatsapp, // Use mapped whatsapp field
+      source: source, // Use mapped source field
       name: leadData.name,
       email: leadData.email,
       company: leadData.company,
