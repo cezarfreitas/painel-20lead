@@ -283,25 +283,42 @@ export const resendWebhookForLead: RequestHandler = async (req, res) => {
  */
 export const getDashboardStats: RequestHandler = (req, res) => {
   try {
+    const { leads } = LeadDB.getAll({ limit: 1000 }); // Get all for stats
+
     const totalLeads = leads.length;
-    const newLeads = leads.filter(lead => lead.status === "new").length;
-    const convertedLeads = leads.filter(lead => lead.status === "converted").length;
-    
-    const leadsByStatus = leads.reduce((acc, lead) => {
+    const newLeads = leads.filter((lead: any) => lead.status === "new").length;
+    const convertedLeads = leads.filter((lead: any) => lead.status === "converted").length;
+
+    const leadsByStatus = leads.reduce((acc: any, lead: any) => {
       acc[lead.status] = (acc[lead.status] || 0) + 1;
       return acc;
     }, {} as Record<Lead["status"], number>);
-    
-    const leadsBySource = leads.reduce((acc, lead) => {
+
+    const leadsBySource = leads.reduce((acc: any, lead: any) => {
       acc[lead.source] = (acc[lead.source] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
-    
-    // Get 5 most recent leads
-    const recentLeads = [...leads]
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+
+    // Get 5 most recent leads and convert to API format
+    const recentDbLeads = leads
+      .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       .slice(0, 5);
-    
+
+    const recentLeads = recentDbLeads.map((lead: any) => ({
+      id: lead.id,
+      phone: lead.phone,
+      source: lead.source,
+      name: lead.name,
+      email: lead.email,
+      company: lead.company,
+      message: lead.message,
+      status: lead.status,
+      priority: lead.priority,
+      createdAt: lead.created_at,
+      updatedAt: lead.updated_at,
+      tags: lead.tags ? JSON.parse(lead.tags) : []
+    }));
+
     const response: DashboardStatsResponse = {
       totalLeads,
       newLeads,
@@ -310,7 +327,7 @@ export const getDashboardStats: RequestHandler = (req, res) => {
       leadsBySource,
       recentLeads
     };
-    
+
     res.json(response);
   } catch (error) {
     console.error("Error getting dashboard stats:", error);
