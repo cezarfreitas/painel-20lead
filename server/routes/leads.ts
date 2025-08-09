@@ -133,19 +133,10 @@ export const createLead: RequestHandler = (req, res) => {
     };
 
     // Validate required fields
-    if (!leadData.name || !leadData.source) {
+    if (!leadData.name || !leadData.source || !leadData.phone) {
       const response: CreateLeadResponse = {
         success: false,
-        error: "Nome e origem são obrigatórios"
-      };
-      return res.status(400).json(response);
-    }
-
-    // Se não tem email mas tem phone, é válido (WhatsApp only)
-    if (!leadData.email && !leadData.phone) {
-      const response: CreateLeadResponse = {
-        success: false,
-        error: "Email ou WhatsApp são obrigatórios"
+        error: "Nome, WhatsApp e origem são obrigatórios"
       };
       return res.status(400).json(response);
     }
