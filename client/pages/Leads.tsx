@@ -1,29 +1,34 @@
 import { useState, useEffect } from "react";
-import { Lead, GetLeadsResponse, UpdateLeadRequest, UpdateLeadResponse } from "@shared/api";
+import {
+  Lead,
+  GetLeadsResponse,
+  UpdateLeadRequest,
+  UpdateLeadResponse,
+} from "@shared/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
   Search,
@@ -36,22 +41,22 @@ import {
   XCircle,
   Clock,
   Send,
-  Loader2
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const statusColors = {
   new: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-  contacted: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20", 
+  contacted: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
   qualified: "bg-purple-500/10 text-purple-500 border-purple-500/20",
   converted: "bg-green-500/10 text-green-500 border-green-500/20",
-  lost: "bg-red-500/10 text-red-500 border-red-500/20"
+  lost: "bg-red-500/10 text-red-500 border-red-500/20",
 };
 
 const priorityColors = {
   low: "bg-gray-500/10 text-gray-500 border-gray-500/20",
   medium: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
-  high: "bg-red-500/10 text-red-500 border-red-500/20"
+  high: "bg-red-500/10 text-red-500 border-red-500/20",
 };
 
 export default function Leads() {
@@ -92,19 +97,19 @@ export default function Leads() {
     }
   };
 
-
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pt-BR", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
       hour: "2-digit",
-      minute: "2-digit"
+      minute: "2-digit",
     });
   };
 
-  const getWebhookStatus = (leadId: string): "success" | "failed" | "pending" => {
+  const getWebhookStatus = (
+    leadId: string,
+  ): "success" | "failed" | "pending" => {
     // Simular status dos webhooks baseado no ID do lead
     // Em produção, isso viria de uma API que consulta os logs de webhook
     const leadNum = parseInt(leadId);
@@ -114,11 +119,11 @@ export default function Leads() {
   };
 
   const resendWebhook = async (leadId: string) => {
-    setResendingLeads(prev => new Set(prev).add(leadId));
+    setResendingLeads((prev) => new Set(prev).add(leadId));
 
     try {
       const response = await fetch(`/api/leads/${leadId}/resend-webhook`, {
-        method: 'POST'
+        method: "POST",
       });
 
       const data = await response.json();
@@ -129,12 +134,11 @@ export default function Leads() {
       } else {
         throw new Error(data.error || "Erro ao reenviar webhook");
       }
-
     } catch (error) {
       console.error("Erro ao reenviar webhook:", error);
       alert("Erro ao reenviar webhook");
     } finally {
-      setResendingLeads(prev => {
+      setResendingLeads((prev) => {
         const newSet = new Set(prev);
         newSet.delete(leadId);
         return newSet;
@@ -146,9 +150,12 @@ export default function Leads() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Gerenciar Leads</h1>
+          <h1 className="text-3xl font-bold text-foreground">
+            Gerenciar Leads
+          </h1>
           <p className="text-muted-foreground">
-            Visualize e gerencie todos os leads recebidos através dos seus formulários
+            Visualize e gerencie todos os leads recebidos através dos seus
+            formulários
           </p>
         </div>
       </div>
@@ -172,8 +179,6 @@ export default function Leads() {
                 className="pl-10"
               />
             </div>
-            
-
           </div>
         </CardContent>
       </Card>
@@ -237,7 +242,9 @@ export default function Leads() {
                       <TableCell className="w-[140px]">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Calendar className="h-3 w-3" />
-                          <span className="text-xs">{formatDate(lead.createdAt)}</span>
+                          <span className="text-xs">
+                            {formatDate(lead.createdAt)}
+                          </span>
                         </div>
                       </TableCell>
 
@@ -246,19 +253,25 @@ export default function Leads() {
                           {getWebhookStatus(lead.id) === "success" && (
                             <>
                               <CheckCircle className="h-3 w-3 text-green-500" />
-                              <span className="text-xs text-green-600">Enviado</span>
+                              <span className="text-xs text-green-600">
+                                Enviado
+                              </span>
                             </>
                           )}
                           {getWebhookStatus(lead.id) === "failed" && (
                             <>
                               <XCircle className="h-3 w-3 text-red-500" />
-                              <span className="text-xs text-red-600">Falhou</span>
+                              <span className="text-xs text-red-600">
+                                Falhou
+                              </span>
                             </>
                           )}
                           {getWebhookStatus(lead.id) === "pending" && (
                             <>
                               <Clock className="h-3 w-3 text-yellow-500" />
-                              <span className="text-xs text-yellow-600">Pendente</span>
+                              <span className="text-xs text-yellow-600">
+                                Pendente
+                              </span>
                             </>
                           )}
                         </div>

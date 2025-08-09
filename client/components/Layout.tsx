@@ -8,7 +8,7 @@ import {
   FileText,
   Menu,
   X,
-  Webhook
+  Webhook,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -21,28 +21,28 @@ const navigation = [
   {
     name: "Dashboard",
     href: "/",
-    icon: BarChart3
+    icon: BarChart3,
   },
   {
     name: "Leads",
     href: "/leads",
-    icon: Users
+    icon: Users,
   },
   {
     name: "Webhooks",
     href: "/webhooks",
-    icon: Webhook
+    icon: Webhook,
   },
   {
     name: "Relatórios",
     href: "/reports",
-    icon: FileText
+    icon: FileText,
   },
   {
     name: "Configurações",
     href: "/settings",
-    icon: Settings
-  }
+    icon: Settings,
+  },
 ];
 
 export default function Layout({ children }: LayoutProps) {
@@ -53,7 +53,7 @@ export default function Layout({ children }: LayoutProps) {
     <div className="min-h-screen bg-background">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         >
@@ -62,10 +62,12 @@ export default function Layout({ children }: LayoutProps) {
       )}
 
       {/* Sidebar */}
-      <div className={cn(
-        "fixed inset-y-0 left-0 z-50 w-64 bg-sidebar border-r border-sidebar-border transition-transform duration-300 ease-in-out lg:translate-x-0",
-        sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
+      <div
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 w-64 bg-sidebar border-r border-sidebar-border transition-transform duration-300 ease-in-out lg:translate-x-0",
+          sidebarOpen ? "translate-x-0" : "-translate-x-full",
+        )}
+      >
         <div className="flex h-full flex-col">
           {/* Logo/Brand */}
           <div className="flex h-16 items-center justify-between px-6 border-b border-sidebar-border">
@@ -92,7 +94,7 @@ export default function Layout({ children }: LayoutProps) {
             {navigation.map((item) => {
               const isActive = location.pathname === item.href;
               const Icon = item.icon;
-              
+
               return (
                 <Link
                   key={item.name}
@@ -102,7 +104,7 @@ export default function Layout({ children }: LayoutProps) {
                     "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                     isActive
                       ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                      : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                      : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -136,20 +138,16 @@ export default function Layout({ children }: LayoutProps) {
           >
             <Menu className="h-5 w-5" />
           </Button>
-          
+
           <div className="flex-1" />
-          
+
           <div className="flex items-center gap-4">
-            <div className="text-sm text-muted-foreground">
-              Admin Dashboard
-            </div>
+            <div className="text-sm text-muted-foreground">Admin Dashboard</div>
           </div>
         </div>
 
         {/* Page content */}
-        <main className="p-6">
-          {children}
-        </main>
+        <main className="p-6">{children}</main>
       </div>
     </div>
   );

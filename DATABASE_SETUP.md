@@ -30,6 +30,7 @@ export DATABASE_URL="mysql://user:pass@host:port/database"
 O sistema criará automaticamente as seguintes tabelas:
 
 #### Tabela `leads`
+
 ```sql
 CREATE TABLE leads (
   id VARCHAR(50) PRIMARY KEY,
@@ -48,6 +49,7 @@ CREATE TABLE leads (
 ```
 
 #### Tabela `webhooks`
+
 ```sql
 CREATE TABLE webhooks (
   id VARCHAR(50) PRIMARY KEY,
@@ -63,6 +65,7 @@ CREATE TABLE webhooks (
 ```
 
 #### Tabela `webhook_logs`
+
 ```sql
 CREATE TABLE webhook_logs (
   id VARCHAR(50) PRIMARY KEY,
@@ -117,10 +120,12 @@ Logs do servidor mostrarão:
 ### 6. Providers Recomendados
 
 **Desenvolvimento:**
+
 - MySQL local via Docker
 - XAMPP/WAMP/MAMP
 
 **Produção:**
+
 - PlanetScale
 - Amazon RDS
 - Google Cloud SQL
@@ -133,11 +138,13 @@ mysql://[username]:[password]@[host]:[port]/[database]?[options]
 ```
 
 Opções úteis:
+
 - `ssl=true` - Para conexões SSL
 - `charset=utf8mb4` - Para suporte completo UTF-8
 - `timezone=Z` - Para UTC
 
 Exemplo completo:
+
 ```bash
 MYSQL_DB="mysql://user:pass@db.example.com:3306/leadhub?ssl=true&charset=utf8mb4"
 ```
@@ -154,15 +161,18 @@ Para migrar dados existentes:
 ## Troubleshooting
 
 **Erro de Conexão:**
+
 - Verifique host, porta, usuário e senha
 - Confirme que o banco de dados existe
 - Teste a conectividade de rede
 
 **Erro de Permissões:**
+
 - Usuário precisa de permissões CREATE, INSERT, UPDATE, DELETE, SELECT
 - Para criação automática de tabelas, precisa de permissão CREATE
 
 **Dados não Aparecem:**
+
 - Verifique os logs do servidor
 - Confirme que a variável de ambiente está definida
 - Teste a conexão manualmente

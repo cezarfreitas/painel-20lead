@@ -6,7 +6,7 @@ import {
   WebhookResponse,
   GetWebhooksResponse,
   WebhookPayload,
-  WebhookLog
+  WebhookLog,
 } from "@shared/webhooks";
 import { Lead } from "@shared/api";
 import { WebhookDB, WebhookLogDB } from "../database";
@@ -31,19 +31,19 @@ export const getWebhooks: RequestHandler = async (req, res) => {
       updatedAt: wh.updated_at,
       lastTriggered: wh.last_triggered,
       successCount: wh.success_count,
-      failureCount: wh.failure_count
+      failureCount: wh.failure_count,
     }));
 
     const response: GetWebhooksResponse = {
       success: true,
-      webhooks: webhooks
+      webhooks: webhooks,
     };
     res.json(response);
   } catch (error) {
     console.error("Error getting webhooks:", error);
     res.status(500).json({
       success: false,
-      webhooks: []
+      webhooks: [],
     });
   }
 };
@@ -59,7 +59,7 @@ export const createWebhook: RequestHandler = async (req, res) => {
     if (!webhookData.name || !webhookData.url) {
       const response: WebhookResponse = {
         success: false,
-        error: "Nome e URL são obrigatórios"
+        error: "Nome e URL são obrigatórios",
       };
       return res.status(400).json(response);
     }
@@ -70,7 +70,7 @@ export const createWebhook: RequestHandler = async (req, res) => {
     } catch {
       const response: WebhookResponse = {
         success: false,
-        error: "URL inválida"
+        error: "URL inválida",
       };
       return res.status(400).json(response);
     }
@@ -78,14 +78,14 @@ export const createWebhook: RequestHandler = async (req, res) => {
     // Create new webhook
     const now = new Date().toISOString();
     const newWebhookData = {
-      id: `wh_${nextWebhookId.toString().padStart(3, '0')}`,
+      id: `wh_${nextWebhookId.toString().padStart(3, "0")}`,
       name: webhookData.name,
       url: webhookData.url,
       isActive: true,
       createdAt: now,
       updatedAt: now,
       successCount: 0,
-      failureCount: 0
+      failureCount: 0,
     };
 
     nextWebhookId++;
@@ -101,12 +101,12 @@ export const createWebhook: RequestHandler = async (req, res) => {
       updatedAt: dbWebhook.updated_at,
       lastTriggered: dbWebhook.last_triggered,
       successCount: dbWebhook.success_count,
-      failureCount: dbWebhook.failure_count
+      failureCount: dbWebhook.failure_count,
     };
 
     const response: WebhookResponse = {
       success: true,
-      webhook: newWebhook
+      webhook: newWebhook,
     };
 
     res.status(201).json(response);
@@ -114,7 +114,7 @@ export const createWebhook: RequestHandler = async (req, res) => {
     console.error("Error creating webhook:", error);
     const response: WebhookResponse = {
       success: false,
-      error: "Erro interno do servidor"
+      error: "Erro interno do servidor",
     };
     res.status(500).json(response);
   }
@@ -133,7 +133,7 @@ export const updateWebhook: RequestHandler = async (req, res) => {
     if (!existingWebhook) {
       const response: WebhookResponse = {
         success: false,
-        error: "Webhook não encontrado"
+        error: "Webhook não encontrado",
       };
       return res.status(404).json(response);
     }
@@ -145,7 +145,7 @@ export const updateWebhook: RequestHandler = async (req, res) => {
       } catch {
         const response: WebhookResponse = {
           success: false,
-          error: "URL inválida"
+          error: "URL inválida",
         };
         return res.status(400).json(response);
       }
@@ -164,12 +164,12 @@ export const updateWebhook: RequestHandler = async (req, res) => {
       updatedAt: dbWebhook.updated_at,
       lastTriggered: dbWebhook.last_triggered,
       successCount: dbWebhook.success_count,
-      failureCount: dbWebhook.failure_count
+      failureCount: dbWebhook.failure_count,
     };
 
     const response: WebhookResponse = {
       success: true,
-      webhook: updatedWebhook
+      webhook: updatedWebhook,
     };
 
     res.json(response);
@@ -177,7 +177,7 @@ export const updateWebhook: RequestHandler = async (req, res) => {
     console.error("Error updating webhook:", error);
     const response: WebhookResponse = {
       success: false,
-      error: "Erro interno do servidor"
+      error: "Erro interno do servidor",
     };
     res.status(500).json(response);
   }
@@ -195,7 +195,7 @@ export const deleteWebhook: RequestHandler = async (req, res) => {
     if (!existingWebhook) {
       return res.status(404).json({
         success: false,
-        error: "Webhook não encontrado"
+        error: "Webhook não encontrado",
       });
     }
 
@@ -206,7 +206,7 @@ export const deleteWebhook: RequestHandler = async (req, res) => {
     console.error("Error deleting webhook:", error);
     res.status(500).json({
       success: false,
-      error: "Erro interno do servidor"
+      error: "Erro interno do servidor",
     });
   }
 };
@@ -232,7 +232,7 @@ export const triggerWebhooks = async (lead: Lead): Promise<void> => {
     updatedAt: wh.updated_at,
     lastTriggered: wh.last_triggered,
     successCount: wh.success_count,
-    failureCount: wh.failure_count
+    failureCount: wh.failure_count,
   }));
 
   const payload: WebhookPayload = {
@@ -245,15 +245,17 @@ export const triggerWebhooks = async (lead: Lead): Promise<void> => {
       name: lead.name,
       company: lead.company,
       message: lead.message,
-      createdAt: lead.createdAt
-    }
+      createdAt: lead.createdAt,
+    },
   };
 
-  console.log(`Triggering ${activeWebhooks.length} webhooks for lead ${lead.id}`);
+  console.log(
+    `Triggering ${activeWebhooks.length} webhooks for lead ${lead.id}`,
+  );
 
   // Trigger all webhooks in parallel
-  const promises = activeWebhooks.map(webhook => 
-    triggerSingleWebhook(webhook, payload, lead.id)
+  const promises = activeWebhooks.map((webhook) =>
+    triggerSingleWebhook(webhook, payload, lead.id),
   );
 
   await Promise.allSettled(promises);
@@ -263,29 +265,31 @@ export const triggerWebhooks = async (lead: Lead): Promise<void> => {
  * Function to trigger a single webhook
  */
 const triggerSingleWebhook = async (
-  webhook: Webhook, 
-  payload: WebhookPayload, 
+  webhook: Webhook,
+  payload: WebhookPayload,
   leadId: string,
   attempt: number = 1,
-  maxAttempts: number = 3
+  maxAttempts: number = 3,
 ): Promise<void> => {
   const logId = `log_${nextLogId++}`;
-  
+
   try {
-    console.log(`Triggering webhook ${webhook.id} (${webhook.url}) - Attempt ${attempt}`);
-    
+    console.log(
+      `Triggering webhook ${webhook.id} (${webhook.url}) - Attempt ${attempt}`,
+    );
+
     const response = await fetch(webhook.url, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': 'LeadHub-Webhook/1.0'
+        "Content-Type": "application/json",
+        "User-Agent": "LeadHub-Webhook/1.0",
       },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(10000) // 10 second timeout
+      signal: AbortSignal.timeout(10000), // 10 second timeout
     });
 
     const responseText = await response.text();
-    
+
     if (response.ok) {
       // Success
       await WebhookDB.incrementSuccess(webhook.id);
@@ -300,7 +304,7 @@ const triggerSingleWebhook = async (
         response: responseText.substring(0, 500), // Limit response size
         attempt,
         maxAttempts,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
 
       await WebhookLogDB.create(log);
@@ -309,7 +313,6 @@ const triggerSingleWebhook = async (
     } else {
       throw new Error(`HTTP ${response.status}: ${responseText}`);
     }
-    
   } catch (error) {
     console.error(`Webhook ${webhook.id} failed (attempt ${attempt}):`, error);
 
@@ -324,7 +327,7 @@ const triggerSingleWebhook = async (
       error: error instanceof Error ? error.message : String(error),
       attempt,
       maxAttempts,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     if (attempt < maxAttempts) {
@@ -333,7 +336,13 @@ const triggerSingleWebhook = async (
       log.nextRetry = new Date(Date.now() + retryDelay).toISOString();
 
       setTimeout(() => {
-        triggerSingleWebhook(webhook, payload, leadId, attempt + 1, maxAttempts);
+        triggerSingleWebhook(
+          webhook,
+          payload,
+          leadId,
+          attempt + 1,
+          maxAttempts,
+        );
       }, retryDelay);
     }
 
@@ -350,13 +359,13 @@ export const getWebhookLogs: RequestHandler = async (req, res) => {
 
     res.json({
       success: true,
-      logs: logs
+      logs: logs,
     });
   } catch (error) {
     console.error("Error getting webhook logs:", error);
     res.status(500).json({
       success: false,
-      logs: []
+      logs: [],
     });
   }
 };

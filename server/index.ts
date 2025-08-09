@@ -8,14 +8,14 @@ import {
   updateLead,
   deleteLead,
   getDashboardStats,
-  resendWebhookForLead
+  resendWebhookForLead,
 } from "./routes/leads";
 import {
   getWebhooks,
   createWebhook,
   updateWebhook,
   deleteWebhook,
-  getWebhookLogs
+  getWebhookLogs,
 } from "./routes/webhooks";
 
 export function createServer() {

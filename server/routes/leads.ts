@@ -7,7 +7,7 @@ import {
   GetLeadsQuery,
   UpdateLeadRequest,
   UpdateLeadResponse,
-  DashboardStatsResponse
+  DashboardStatsResponse,
 } from "@shared/api";
 import { triggerWebhooks } from "./webhooks";
 import { LeadDB } from "../database";
@@ -26,7 +26,7 @@ export const getLeads: RequestHandler = async (req, res) => {
     const { leads, total } = await LeadDB.getAll({
       search: query.search,
       page,
-      limit
+      limit,
     });
 
     // Convert database format to API format
@@ -42,14 +42,22 @@ export const getLeads: RequestHandler = async (req, res) => {
       priority: lead.priority,
       createdAt: lead.created_at,
       updatedAt: lead.updated_at,
-      tags: lead.tags ? (() => {
-        try {
-          return JSON.parse(lead.tags);
-        } catch (e) {
-          console.error('Error parsing tags for lead', lead.id, ':', lead.tags, e);
-          return [];
-        }
-      })() : []
+      tags: lead.tags
+        ? (() => {
+            try {
+              return JSON.parse(lead.tags);
+            } catch (e) {
+              console.error(
+                "Error parsing tags for lead",
+                lead.id,
+                ":",
+                lead.tags,
+                e,
+              );
+              return [];
+            }
+          })()
+        : [],
     }));
 
     const response: GetLeadsResponse = {
@@ -57,7 +65,7 @@ export const getLeads: RequestHandler = async (req, res) => {
       leads: formattedLeads,
       total,
       page,
-      limit
+      limit,
     };
 
     res.json(response);
@@ -68,7 +76,7 @@ export const getLeads: RequestHandler = async (req, res) => {
       leads: [],
       total: 0,
       page: 1,
-      limit: 10
+      limit: 10,
     });
   }
 };
@@ -84,7 +92,7 @@ export const createLead: RequestHandler = async (req, res) => {
     if (!leadData.phone || !leadData.source) {
       const response: CreateLeadResponse = {
         success: false,
-        error: "WhatsApp e origem são obrigatórios"
+        error: "WhatsApp e origem são obrigatórios",
       };
       return res.status(400).json(response);
     }
@@ -103,7 +111,7 @@ export const createLead: RequestHandler = async (req, res) => {
       priority: "medium",
       createdAt: now,
       updatedAt: now,
-      tags: leadData.tags || []
+      tags: leadData.tags || [],
     };
 
     nextId++;
@@ -122,24 +130,32 @@ export const createLead: RequestHandler = async (req, res) => {
       priority: dbLead.priority,
       createdAt: dbLead.created_at,
       updatedAt: dbLead.updated_at,
-      tags: dbLead.tags ? (() => {
-        try {
-          return JSON.parse(dbLead.tags);
-        } catch (e) {
-          console.error('Error parsing tags for lead', dbLead.id, ':', dbLead.tags, e);
-          return [];
-        }
-      })() : []
+      tags: dbLead.tags
+        ? (() => {
+            try {
+              return JSON.parse(dbLead.tags);
+            } catch (e) {
+              console.error(
+                "Error parsing tags for lead",
+                dbLead.id,
+                ":",
+                dbLead.tags,
+                e,
+              );
+              return [];
+            }
+          })()
+        : [],
     };
 
     // Trigger webhooks asynchronously (don't wait for them)
-    triggerWebhooks(newLead).catch(error => {
+    triggerWebhooks(newLead).catch((error) => {
       console.error("Error triggering webhooks:", error);
     });
 
     const response: CreateLeadResponse = {
       success: true,
-      lead: newLead
+      lead: newLead,
     };
 
     res.status(201).json(response);
@@ -147,7 +163,7 @@ export const createLead: RequestHandler = async (req, res) => {
     console.error("Error creating lead:", error);
     const response: CreateLeadResponse = {
       success: false,
-      error: "Erro interno do servidor"
+      error: "Erro interno do servidor",
     };
     res.status(500).json(response);
   }
@@ -166,7 +182,7 @@ export const updateLead: RequestHandler = async (req, res) => {
     if (!existingLead) {
       const response: UpdateLeadResponse = {
         success: false,
-        error: "Lead não encontrado"
+        error: "Lead não encontrado",
       };
       return res.status(404).json(response);
     }
@@ -180,7 +196,8 @@ export const updateLead: RequestHandler = async (req, res) => {
     if (updates.message !== undefined) dbUpdates.message = updates.message;
     if (updates.status !== undefined) dbUpdates.status = updates.status;
     if (updates.priority !== undefined) dbUpdates.priority = updates.priority;
-    if (updates.tags !== undefined) dbUpdates.tags = JSON.stringify(updates.tags);
+    if (updates.tags !== undefined)
+      dbUpdates.tags = JSON.stringify(updates.tags);
 
     const dbLead = await LeadDB.update(leadId, dbUpdates);
 
@@ -197,19 +214,27 @@ export const updateLead: RequestHandler = async (req, res) => {
       priority: dbLead.priority,
       createdAt: dbLead.created_at,
       updatedAt: dbLead.updated_at,
-      tags: dbLead.tags ? (() => {
-        try {
-          return JSON.parse(dbLead.tags);
-        } catch (e) {
-          console.error('Error parsing tags for lead', dbLead.id, ':', dbLead.tags, e);
-          return [];
-        }
-      })() : []
+      tags: dbLead.tags
+        ? (() => {
+            try {
+              return JSON.parse(dbLead.tags);
+            } catch (e) {
+              console.error(
+                "Error parsing tags for lead",
+                dbLead.id,
+                ":",
+                dbLead.tags,
+                e,
+              );
+              return [];
+            }
+          })()
+        : [],
     };
 
     const response: UpdateLeadResponse = {
       success: true,
-      lead: updatedLead
+      lead: updatedLead,
     };
 
     res.json(response);
@@ -217,7 +242,7 @@ export const updateLead: RequestHandler = async (req, res) => {
     console.error("Error updating lead:", error);
     const response: UpdateLeadResponse = {
       success: false,
-      error: "Erro interno do servidor"
+      error: "Erro interno do servidor",
     };
     res.status(500).json(response);
   }
@@ -235,7 +260,7 @@ export const deleteLead: RequestHandler = async (req, res) => {
     if (!existingLead) {
       return res.status(404).json({
         success: false,
-        error: "Lead não encontrado"
+        error: "Lead não encontrado",
       });
     }
 
@@ -246,7 +271,7 @@ export const deleteLead: RequestHandler = async (req, res) => {
     console.error("Error deleting lead:", error);
     res.status(500).json({
       success: false,
-      error: "Erro interno do servidor"
+      error: "Erro interno do servidor",
     });
   }
 };
@@ -263,7 +288,7 @@ export const resendWebhookForLead: RequestHandler = async (req, res) => {
     if (!dbLead) {
       return res.status(404).json({
         success: false,
-        error: "Lead não encontrado"
+        error: "Lead não encontrado",
       });
     }
 
@@ -280,14 +305,22 @@ export const resendWebhookForLead: RequestHandler = async (req, res) => {
       priority: dbLead.priority,
       createdAt: dbLead.created_at,
       updatedAt: dbLead.updated_at,
-      tags: dbLead.tags ? (() => {
-        try {
-          return JSON.parse(dbLead.tags);
-        } catch (e) {
-          console.error('Error parsing tags for lead', dbLead.id, ':', dbLead.tags, e);
-          return [];
-        }
-      })() : []
+      tags: dbLead.tags
+        ? (() => {
+            try {
+              return JSON.parse(dbLead.tags);
+            } catch (e) {
+              console.error(
+                "Error parsing tags for lead",
+                dbLead.id,
+                ":",
+                dbLead.tags,
+                e,
+              );
+              return [];
+            }
+          })()
+        : [],
     };
 
     // Trigger webhooks for this specific lead
@@ -295,13 +328,13 @@ export const resendWebhookForLead: RequestHandler = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Webhooks reenviados com sucesso"
+      message: "Webhooks reenviados com sucesso",
     });
   } catch (error) {
     console.error("Error resending webhooks:", error);
     res.status(500).json({
       success: false,
-      error: "Erro interno do servidor"
+      error: "Erro interno do servidor",
     });
   }
 };
@@ -315,22 +348,35 @@ export const getDashboardStats: RequestHandler = async (req, res) => {
 
     const leadsArray = leads as any[];
     const totalLeads = leadsArray.length;
-    const newLeads = leadsArray.filter((lead: any) => lead.status === "new").length;
-    const convertedLeads = leadsArray.filter((lead: any) => lead.status === "converted").length;
+    const newLeads = leadsArray.filter(
+      (lead: any) => lead.status === "new",
+    ).length;
+    const convertedLeads = leadsArray.filter(
+      (lead: any) => lead.status === "converted",
+    ).length;
 
-    const leadsByStatus = leadsArray.reduce((acc: any, lead: any) => {
-      acc[lead.status] = (acc[lead.status] || 0) + 1;
-      return acc;
-    }, {} as Record<Lead["status"], number>);
+    const leadsByStatus = leadsArray.reduce(
+      (acc: any, lead: any) => {
+        acc[lead.status] = (acc[lead.status] || 0) + 1;
+        return acc;
+      },
+      {} as Record<Lead["status"], number>,
+    );
 
-    const leadsBySource = leadsArray.reduce((acc: any, lead: any) => {
-      acc[lead.source] = (acc[lead.source] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const leadsBySource = leadsArray.reduce(
+      (acc: any, lead: any) => {
+        acc[lead.source] = (acc[lead.source] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
     // Get 5 most recent leads and convert to API format
     const recentDbLeads = leadsArray
-      .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      .sort(
+        (a: any, b: any) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      )
       .slice(0, 5);
 
     const recentLeads = recentDbLeads.map((lead: any) => ({
@@ -345,14 +391,22 @@ export const getDashboardStats: RequestHandler = async (req, res) => {
       priority: lead.priority,
       createdAt: lead.created_at,
       updatedAt: lead.updated_at,
-      tags: lead.tags ? (() => {
-        try {
-          return JSON.parse(lead.tags);
-        } catch (e) {
-          console.error('Error parsing tags for lead', lead.id, ':', lead.tags, e);
-          return [];
-        }
-      })() : []
+      tags: lead.tags
+        ? (() => {
+            try {
+              return JSON.parse(lead.tags);
+            } catch (e) {
+              console.error(
+                "Error parsing tags for lead",
+                lead.id,
+                ":",
+                lead.tags,
+                e,
+              );
+              return [];
+            }
+          })()
+        : [],
     }));
 
     const response: DashboardStatsResponse = {
@@ -361,7 +415,7 @@ export const getDashboardStats: RequestHandler = async (req, res) => {
       convertedLeads,
       leadsByStatus,
       leadsBySource,
-      recentLeads
+      recentLeads,
     };
 
     res.json(response);
@@ -373,7 +427,7 @@ export const getDashboardStats: RequestHandler = async (req, res) => {
       convertedLeads: 0,
       leadsByStatus: {},
       leadsBySource: {},
-      recentLeads: []
+      recentLeads: [],
     });
   }
 };

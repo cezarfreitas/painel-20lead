@@ -1,34 +1,39 @@
 import { useState, useEffect } from "react";
-import { Webhook, CreateWebhookRequest, GetWebhooksResponse, WebhookResponse } from "@shared/webhooks";
+import {
+  Webhook,
+  CreateWebhookRequest,
+  GetWebhooksResponse,
+  WebhookResponse,
+} from "@shared/webhooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import { 
+import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { 
+import {
   Plus,
   Webhook as WebhookIcon,
   Globe,
@@ -38,7 +43,7 @@ import {
   MoreHorizontal,
   Activity,
   AlertTriangle,
-  Zap
+  Zap,
 } from "lucide-react";
 
 export default function Webhooks() {
@@ -56,7 +61,7 @@ export default function Webhooks() {
       setLoading(true);
       const response = await fetch("/api/webhooks");
       const data = (await response.json()) as GetWebhooksResponse;
-      
+
       if (data.success) {
         setWebhooks(data.webhooks);
       }
@@ -73,19 +78,19 @@ export default function Webhooks() {
     try {
       const webhookData: CreateWebhookRequest = {
         name: newWebhook.name,
-        url: newWebhook.url
+        url: newWebhook.url,
       };
 
       const response = await fetch("/api/webhooks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(webhookData)
+        body: JSON.stringify(webhookData),
       });
-      
+
       const data = (await response.json()) as WebhookResponse;
-      
+
       if (data.success && data.webhook) {
-        setWebhooks(prev => [...prev, data.webhook!]);
+        setWebhooks((prev) => [...prev, data.webhook!]);
         setNewWebhook({ name: "", url: "" });
         setIsDialogOpen(false);
       } else {
@@ -102,15 +107,15 @@ export default function Webhooks() {
       const response = await fetch(`/api/webhooks/${webhookId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isActive })
+        body: JSON.stringify({ isActive }),
       });
-      
+
       const data = (await response.json()) as WebhookResponse;
-      
+
       if (data.success && data.webhook) {
-        setWebhooks(prev => prev.map(wh => 
-          wh.id === webhookId ? data.webhook! : wh
-        ));
+        setWebhooks((prev) =>
+          prev.map((wh) => (wh.id === webhookId ? data.webhook! : wh)),
+        );
       }
     } catch (error) {
       console.error("Error updating webhook:", error);
@@ -122,11 +127,11 @@ export default function Webhooks() {
 
     try {
       const response = await fetch(`/api/webhooks/${webhookId}`, {
-        method: "DELETE"
+        method: "DELETE",
       });
-      
+
       if (response.ok) {
-        setWebhooks(prev => prev.filter(wh => wh.id !== webhookId));
+        setWebhooks((prev) => prev.filter((wh) => wh.id !== webhookId));
       }
     } catch (error) {
       console.error("Error deleting webhook:", error);
@@ -136,20 +141,21 @@ export default function Webhooks() {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pt-BR", {
       day: "2-digit",
-      month: "2-digit", 
+      month: "2-digit",
       year: "numeric",
       hour: "2-digit",
-      minute: "2-digit"
+      minute: "2-digit",
     });
   };
 
   const totalWebhooks = webhooks.length;
-  const activeWebhooks = webhooks.filter(wh => wh.isActive).length;
+  const activeWebhooks = webhooks.filter((wh) => wh.isActive).length;
   const totalSuccess = webhooks.reduce((sum, wh) => sum + wh.successCount, 0);
   const totalFailures = webhooks.reduce((sum, wh) => sum + wh.failureCount, 0);
-  const successRate = totalSuccess + totalFailures > 0 
-    ? ((totalSuccess / (totalSuccess + totalFailures)) * 100).toFixed(1) 
-    : "100";
+  const successRate =
+    totalSuccess + totalFailures > 0
+      ? ((totalSuccess / (totalSuccess + totalFailures)) * 100).toFixed(1)
+      : "100";
 
   if (loading) {
     return (
@@ -166,7 +172,8 @@ export default function Webhooks() {
         <div>
           <h1 className="text-3xl font-bold text-foreground">Webhooks</h1>
           <p className="text-muted-foreground">
-            Configure webhooks para reenviar leads automaticamente para seus sistemas
+            Configure webhooks para reenviar leads automaticamente para seus
+            sistemas
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -180,7 +187,8 @@ export default function Webhooks() {
             <DialogHeader>
               <DialogTitle>Criar Novo Webhook</DialogTitle>
               <DialogDescription>
-                Adicione uma URL que receberá os leads automaticamente quando eles forem criados
+                Adicione uma URL que receberá os leads automaticamente quando
+                eles forem criados
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
@@ -190,7 +198,9 @@ export default function Webhooks() {
                   id="name"
                   placeholder="Ex: Sistema CRM, Email Marketing..."
                   value={newWebhook.name}
-                  onChange={(e) => setNewWebhook(prev => ({ ...prev, name: e.target.value }))}
+                  onChange={(e) =>
+                    setNewWebhook((prev) => ({ ...prev, name: e.target.value }))
+                  }
                 />
               </div>
               <div>
@@ -199,7 +209,9 @@ export default function Webhooks() {
                   id="url"
                   placeholder="https://api.seucrm.com/webhooks/leads"
                   value={newWebhook.url}
-                  onChange={(e) => setNewWebhook(prev => ({ ...prev, url: e.target.value }))}
+                  onChange={(e) =>
+                    setNewWebhook((prev) => ({ ...prev, url: e.target.value }))
+                  }
                 />
               </div>
               <Button onClick={createWebhook} className="w-full">
@@ -214,7 +226,9 @@ export default function Webhooks() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de Webhooks</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total de Webhooks
+            </CardTitle>
             <WebhookIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -227,14 +241,16 @@ export default function Webhooks() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Entregas Bem-sucedidas</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Entregas Bem-sucedidas
+            </CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-500">{totalSuccess}</div>
-            <p className="text-xs text-muted-foreground">
-              Total de sucessos
-            </p>
+            <div className="text-2xl font-bold text-green-500">
+              {totalSuccess}
+            </div>
+            <p className="text-xs text-muted-foreground">Total de sucessos</p>
           </CardContent>
         </Card>
 
@@ -244,23 +260,25 @@ export default function Webhooks() {
             <XCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-500">{totalFailures}</div>
-            <p className="text-xs text-muted-foreground">
-              Total de falhas
-            </p>
+            <div className="text-2xl font-bold text-red-500">
+              {totalFailures}
+            </div>
+            <p className="text-xs text-muted-foreground">Total de falhas</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Taxa de Sucesso</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Taxa de Sucesso
+            </CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-primary">{successRate}%</div>
-            <p className="text-xs text-muted-foreground">
-              Taxa média
-            </p>
+            <div className="text-2xl font-bold text-primary">
+              {successRate}%
+            </div>
+            <p className="text-xs text-muted-foreground">Taxa média</p>
           </CardContent>
         </Card>
       </div>
@@ -274,9 +292,12 @@ export default function Webhooks() {
           {webhooks.length === 0 ? (
             <div className="text-center py-8">
               <WebhookIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Nenhum webhook configurado</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                Nenhum webhook configurado
+              </h3>
               <p className="text-muted-foreground mb-4">
-                Configure webhooks para reenviar leads automaticamente para seus sistemas
+                Configure webhooks para reenviar leads automaticamente para seus
+                sistemas
               </p>
               <Button onClick={() => setIsDialogOpen(true)}>
                 <Plus className="h-4 w-4 mr-2" />
@@ -300,20 +321,28 @@ export default function Webhooks() {
                 <TableBody>
                   {webhooks.map((webhook) => (
                     <TableRow key={webhook.id}>
-                      <TableCell className="font-medium">{webhook.name}</TableCell>
+                      <TableCell className="font-medium">
+                        {webhook.name}
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2 max-w-xs">
                           <Globe className="h-3 w-3 flex-shrink-0" />
-                          <span className="truncate text-sm">{webhook.url}</span>
+                          <span className="truncate text-sm">
+                            {webhook.url}
+                          </span>
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Switch
                             checked={webhook.isActive}
-                            onCheckedChange={(checked) => toggleWebhook(webhook.id, checked)}
+                            onCheckedChange={(checked) =>
+                              toggleWebhook(webhook.id, checked)
+                            }
                           />
-                          <Badge variant={webhook.isActive ? "default" : "secondary"}>
+                          <Badge
+                            variant={webhook.isActive ? "default" : "secondary"}
+                          >
                             {webhook.isActive ? "Ativo" : "Inativo"}
                           </Badge>
                         </div>
@@ -326,7 +355,9 @@ export default function Webhooks() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          {webhook.failureCount > 0 && <AlertTriangle className="h-3 w-3 text-red-500" />}
+                          {webhook.failureCount > 0 && (
+                            <AlertTriangle className="h-3 w-3 text-red-500" />
+                          )}
                           {webhook.failureCount}
                         </div>
                       </TableCell>
@@ -337,7 +368,9 @@ export default function Webhooks() {
                             {formatDate(webhook.lastTriggered)}
                           </div>
                         ) : (
-                          <span className="text-muted-foreground text-sm">Nunca</span>
+                          <span className="text-muted-foreground text-sm">
+                            Nunca
+                          </span>
                         )}
                       </TableCell>
                       <TableCell>
@@ -353,7 +386,7 @@ export default function Webhooks() {
                               Testar Webhook
                             </DropdownMenuItem>
                             <DropdownMenuItem>Ver Logs</DropdownMenuItem>
-                            <DropdownMenuItem 
+                            <DropdownMenuItem
                               className="text-destructive"
                               onClick={() => deleteWebhook(webhook.id)}
                             >
@@ -379,41 +412,53 @@ export default function Webhooks() {
         <CardContent>
           <div className="space-y-4">
             <div className="flex items-start gap-4">
-              <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-bold">1</div>
+              <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-bold">
+                1
+              </div>
               <div>
                 <h3 className="font-semibold">Lead é recebido</h3>
                 <p className="text-sm text-muted-foreground">
-                  Quando um lead é criado via API, o sistema processa e salva os dados
+                  Quando um lead é criado via API, o sistema processa e salva os
+                  dados
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-start gap-4">
-              <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-bold">2</div>
+              <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-bold">
+                2
+              </div>
               <div>
                 <h3 className="font-semibold">Webhooks são disparados</h3>
                 <p className="text-sm text-muted-foreground">
-                  Automaticamente, todos os webhooks ativos recebem os dados do lead
+                  Automaticamente, todos os webhooks ativos recebem os dados do
+                  lead
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-start gap-4">
-              <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-bold">3</div>
+              <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-bold">
+                3
+              </div>
               <div>
                 <h3 className="font-semibold">Tentativas automáticas</h3>
                 <p className="text-sm text-muted-foreground">
-                  Se um webhook falhar, o sistema tentará novamente até 3 vezes automaticamente
+                  Se um webhook falhar, o sistema tentará novamente até 3 vezes
+                  automaticamente
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-start gap-4">
-              <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-bold">4</div>
+              <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-bold">
+                4
+              </div>
               <div>
                 <h3 className="font-semibold">Logs e monitoramento</h3>
                 <p className="text-sm text-muted-foreground">
-                  Acompanhe o status de cada entrega e identifique problemas rapidamente
+                  Acompanhe o status de cada entrega e identifique problemas
+                  rapidamente
                 </p>
               </div>
             </div>

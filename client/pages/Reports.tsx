@@ -23,8 +23,9 @@ export default function Reports() {
             <BarChart3 className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">Relatórios em Breve</h3>
             <p className="text-muted-foreground max-w-md mx-auto">
-              Esta página está sendo desenvolvida e em breve você terá acesso a relatórios 
-              detalhados sobre o desempenho dos seus leads, métricas de conversão e análises avançadas.
+              Esta página está sendo desenvolvida e em breve você terá acesso a
+              relatórios detalhados sobre o desempenho dos seus leads, métricas
+              de conversão e análises avançadas.
             </p>
             <div className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground">
               <TrendingUp className="h-4 w-4" />

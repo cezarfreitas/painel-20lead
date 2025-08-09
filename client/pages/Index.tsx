@@ -3,18 +3,18 @@ import { DashboardStatsResponse, Lead } from "@shared/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { 
-  Users, 
-  UserCheck, 
-  TrendingUp, 
-  Mail, 
-  Phone, 
-  Building, 
+import {
+  Users,
+  UserCheck,
+  TrendingUp,
+  Mail,
+  Phone,
+  Building,
   Calendar,
   Eye,
   ArrowRight,
   BarChart3,
-  PieChart
+  PieChart,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -41,20 +41,20 @@ export default function Index() {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pt-BR", {
       day: "2-digit",
-      month: "2-digit", 
+      month: "2-digit",
       year: "numeric",
       hour: "2-digit",
-      minute: "2-digit"
+      minute: "2-digit",
     });
   };
 
   const getStatusLabel = (status: Lead["status"]) => {
     const labels = {
       new: "Novo",
-      contacted: "Contatado", 
+      contacted: "Contatado",
       qualified: "Qualificado",
       converted: "Convertido",
-      lost: "Perdido"
+      lost: "Perdido",
     };
     return labels[status];
   };
@@ -63,7 +63,7 @@ export default function Index() {
     const colors = {
       low: "bg-gray-500/10 text-gray-500 border-gray-500/20",
       medium: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
-      high: "bg-red-500/10 text-red-500 border-red-500/20"
+      high: "bg-red-500/10 text-red-500 border-red-500/20",
     };
     return colors[priority];
   };
@@ -81,7 +81,9 @@ export default function Index() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Dashboard de Leads</h1>
+          <h1 className="text-3xl font-bold text-foreground">
+            Dashboard de Leads
+          </h1>
           <p className="text-muted-foreground">
             Visão geral dos leads recebidos através dos seus formulários
           </p>
@@ -98,7 +100,9 @@ export default function Index() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de Leads</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total de Leads
+            </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -115,7 +119,9 @@ export default function Index() {
             <Mail className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-500">{stats?.newLeads || 0}</div>
+            <div className="text-2xl font-bold text-blue-500">
+              {stats?.newLeads || 0}
+            </div>
             <p className="text-xs text-muted-foreground">
               Aguardando primeiro contato
             </p>
@@ -128,7 +134,9 @@ export default function Index() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-500">{stats?.convertedLeads || 0}</div>
+            <div className="text-2xl font-bold text-green-500">
+              {stats?.convertedLeads || 0}
+            </div>
             <p className="text-xs text-muted-foreground">
               Leads que se tornaram clientes
             </p>
@@ -137,14 +145,17 @@ export default function Index() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Taxa de Conversão</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Taxa de Conversão
+            </CardTitle>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-primary">
-              {stats?.totalLeads && stats.totalLeads > 0 
+              {stats?.totalLeads && stats.totalLeads > 0
                 ? Math.round((stats.convertedLeads / stats.totalLeads) * 100)
-                : 0}%
+                : 0}
+              %
             </div>
             <p className="text-xs text-muted-foreground">
               Taxa de conversão atual
@@ -166,15 +177,22 @@ export default function Index() {
             {stats?.recentLeads && stats.recentLeads.length > 0 ? (
               <div className="space-y-4">
                 {stats.recentLeads.map((lead) => (
-                  <div key={lead.id} className="flex items-start justify-between p-3 rounded-lg border">
+                  <div
+                    key={lead.id}
+                    className="flex items-start justify-between p-3 rounded-lg border"
+                  >
                     <div className="space-y-1 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{lead.name}</span>
-                        <Badge 
-                          variant="outline" 
+                        <Badge
+                          variant="outline"
                           className={getPriorityColor(lead.priority)}
                         >
-                          {lead.priority === "high" ? "Alta" : lead.priority === "medium" ? "Média" : "Baixa"}
+                          {lead.priority === "high"
+                            ? "Alta"
+                            : lead.priority === "medium"
+                              ? "Média"
+                              : "Baixa"}
                         </Badge>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -218,18 +236,31 @@ export default function Index() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {stats?.leadsByStatus && Object.keys(stats.leadsByStatus).length > 0 ? (
+            {stats?.leadsByStatus &&
+            Object.keys(stats.leadsByStatus).length > 0 ? (
               <div className="space-y-3">
                 {Object.entries(stats.leadsByStatus).map(([status, count]) => (
-                  <div key={status} className="flex items-center justify-between">
+                  <div
+                    key={status}
+                    className="flex items-center justify-between"
+                  >
                     <div className="flex items-center gap-2">
-                      <div className={`w-3 h-3 rounded-full ${
-                        status === "new" ? "bg-blue-500" :
-                        status === "contacted" ? "bg-yellow-500" :
-                        status === "qualified" ? "bg-purple-500" :
-                        status === "converted" ? "bg-green-500" : "bg-red-500"
-                      }`} />
-                      <span className="text-sm">{getStatusLabel(status as Lead["status"])}</span>
+                      <div
+                        className={`w-3 h-3 rounded-full ${
+                          status === "new"
+                            ? "bg-blue-500"
+                            : status === "contacted"
+                              ? "bg-yellow-500"
+                              : status === "qualified"
+                                ? "bg-purple-500"
+                                : status === "converted"
+                                  ? "bg-green-500"
+                                  : "bg-red-500"
+                        }`}
+                      />
+                      <span className="text-sm">
+                        {getStatusLabel(status as Lead["status"])}
+                      </span>
                     </div>
                     <span className="font-medium">{count}</span>
                   </div>
@@ -251,7 +282,11 @@ export default function Index() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
-            <Button variant="outline" className="justify-start h-auto p-4" asChild>
+            <Button
+              variant="outline"
+              className="justify-start h-auto p-4"
+              asChild
+            >
               <Link to="/leads">
                 <div className="text-left">
                   <div className="font-medium">Gerenciar Leads</div>
@@ -262,7 +297,11 @@ export default function Index() {
               </Link>
             </Button>
 
-            <Button variant="outline" className="justify-start h-auto p-4" asChild>
+            <Button
+              variant="outline"
+              className="justify-start h-auto p-4"
+              asChild
+            >
               <Link to="/webhooks">
                 <div className="text-left">
                   <div className="font-medium">Configurar Webhooks</div>
@@ -273,7 +312,11 @@ export default function Index() {
               </Link>
             </Button>
 
-            <Button variant="outline" className="justify-start h-auto p-4" asChild>
+            <Button
+              variant="outline"
+              className="justify-start h-auto p-4"
+              asChild
+            >
               <Link to="/reports">
                 <div className="text-left">
                   <div className="font-medium">Relatórios</div>
@@ -295,16 +338,16 @@ export default function Index() {
         <CardContent>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Use o endpoint abaixo para enviar leads dos seus formulários externos:
+              Use o endpoint abaixo para enviar leads dos seus formulários
+              externos:
             </p>
             <div className="bg-muted p-3 rounded-lg font-mono text-sm">
               <div className="text-green-600">POST</div>
-              <div className="mt-1">
-                {window.location.origin}/api/leads
-              </div>
+              <div className="mt-1">{window.location.origin}/api/leads</div>
             </div>
             <div className="text-sm text-muted-foreground">
-              <strong>Campos obrigatórios:</strong> name, email, source<br />
+              <strong>Campos obrigatórios:</strong> name, email, source
+              <br />
               <strong>Campos opcionais:</strong> phone, company, message, tags[]
             </div>
           </div>
