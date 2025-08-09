@@ -81,9 +81,9 @@ export const getLeads: RequestHandler = (req, res) => {
     
     if (query.search) {
       const searchTerm = query.search.toLowerCase();
-      filteredLeads = filteredLeads.filter(lead => 
+      filteredLeads = filteredLeads.filter(lead =>
         lead.name.toLowerCase().includes(searchTerm) ||
-        lead.email.toLowerCase().includes(searchTerm) ||
+        lead.phone.toLowerCase().includes(searchTerm) ||
         lead.company?.toLowerCase().includes(searchTerm) ||
         lead.message?.toLowerCase().includes(searchTerm)
       );
