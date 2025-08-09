@@ -149,6 +149,7 @@ export const createLead: RequestHandler = async (req, res) => {
     };
 
     // Trigger webhooks asynchronously (don't wait for them)
+    console.log(`[LEAD] About to trigger webhooks for lead ${newLead.id}`);
     triggerWebhooks(newLead).catch((error) => {
       console.error("Error triggering webhooks:", error);
     });
