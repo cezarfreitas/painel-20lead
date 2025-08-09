@@ -154,22 +154,25 @@ async function insertSampleData() {
 
     await db.execute(
       `
-      INSERT INTO leads (id, phone, source, name, company, message, status, priority, created_at, updated_at, tags)
-      VALUES 
-        ('1', '+55 11 99999-9999', 'landing-page-produtos', 'João Silva', 'Tech Solutions Ltd', 'Interessado em saber mais sobre os serviços', 'new', 'high', ?, ?, ?),
-        ('2', '+55 21 88888-8888', 'formulario-contato', 'Maria Santos', 'Inovação & Co', 'Gostaria de agendar uma demonstração', 'contacted', 'medium', ?, ?, ?),
-        ('3', '+55 11 99999-9999', 'webinar-growth', 'Pedro Costa', 'StartupXYZ', 'Preciso de uma solução escalável', 'qualified', 'high', ?, ?, ?)
+      INSERT INTO leads (id, phone, source, name, company, message, status, priority, created_at, updated_at, tags, custom_data)
+      VALUES
+        ('1', '+55 11 99999-9999', 'landing-page-produtos', 'João Silva', 'Tech Solutions Ltd', 'Interessado em saber mais sobre os serviços', 'new', 'high', ?, ?, ?, ?),
+        ('2', '+55 21 88888-8888', 'formulario-contato', 'Maria Santos', 'Inovação & Co', 'Gostaria de agendar uma demonstração', 'contacted', 'medium', ?, ?, ?, ?),
+        ('3', '+55 11 99999-9999', 'webinar-growth', 'Pedro Costa', 'StartupXYZ', 'Preciso de uma solução escalável', 'qualified', 'high', ?, ?, ?, ?)
     `,
       [
         twoDaysAgo,
         twoDaysAgo,
         JSON.stringify(["produto", "premium"]),
+        JSON.stringify({ budget: "R$ 5.000", interesse: "plano-premium" }),
         dayAgo,
         dayAgo,
         JSON.stringify(["demo", "empresarial"]),
+        JSON.stringify({ agendamento: "2025-08-15", funcionarios: 50 }),
         now,
         now,
         JSON.stringify(["startup", "growth"]),
+        JSON.stringify({ stage: "series-a", employees: 15, revenue: "R$ 100k/mês" }),
       ],
     );
   }
