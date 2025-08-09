@@ -108,7 +108,12 @@ export default function Webhooks() {
 
       if (data.success && data.webhook) {
         setWebhooks((prev) => [...prev, data.webhook!]);
-        setNewWebhook({ name: "", url: "" });
+        setNewWebhook({
+          name: "",
+          url: "",
+          customFields: [],
+          sendFields: []
+        });
         setIsDialogOpen(false);
       } else {
         alert("Erro ao criar webhook: " + (data.error || "Erro desconhecido"));
