@@ -150,7 +150,6 @@ export const createLead: RequestHandler = async (req, res) => {
 
     console.log("💾 [CREATE LEAD] About to create lead with data:", JSON.stringify(newLeadData, null, 2));
 
-    nextId++;
     const dbLead = await LeadDB.create(newLeadData);
 
     console.log("✅ [CREATE LEAD] Lead created successfully:", dbLead.id);
