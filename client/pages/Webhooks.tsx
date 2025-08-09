@@ -90,6 +90,8 @@ export default function Webhooks() {
       const webhookData: CreateWebhookRequest = {
         name: newWebhook.name,
         url: newWebhook.url,
+        customFields: newWebhook.customFields,
+        sendFields: newWebhook.sendFields,
       };
 
       const response = await fetch("/api/webhooks", {
