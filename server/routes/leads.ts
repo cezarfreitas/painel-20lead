@@ -212,9 +212,11 @@ export const createLead: RequestHandler = async (req, res) => {
       lead: newLead,
     };
 
+    console.log("🚀 [CREATE LEAD] Success! Returning response");
     res.status(201).json(response);
   } catch (error) {
-    console.error("Error creating lead:", error);
+    console.error("❌ [CREATE LEAD] Error creating lead:", error);
+    console.error("❌ [CREATE LEAD] Error stack:", error instanceof Error ? error.stack : 'No stack trace');
     const response: CreateLeadResponse = {
       success: false,
       error: "Erro interno do servidor",
