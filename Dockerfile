@@ -18,10 +18,16 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Verify build artifacts
-RUN ls -la dist/ || echo "dist directory not found"
-RUN ls -la dist/spa/ || echo "spa directory not found"
-RUN ls -la dist/server/ || echo "server directory not found"
+# Verify build artifacts and show structure
+RUN echo "=== Build completed ===" && \
+    echo "Contents of dist:" && \
+    ls -la dist/ 2>/dev/null || echo "No dist directory" && \
+    echo "Contents of dist/server:" && \
+    ls -la dist/server/ 2>/dev/null || echo "No dist/server directory" && \
+    echo "Contents of dist/spa:" && \
+    ls -la dist/spa/ 2>/dev/null || echo "No dist/spa directory" && \
+    echo "Checking for production.mjs:" && \
+    ls -la dist/server/production.mjs 2>/dev/null || echo "production.mjs not found"
 
 # Create user
 RUN adduser -D -s /bin/sh appuser && chown -R appuser:appuser /app
