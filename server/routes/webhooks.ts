@@ -54,7 +54,7 @@ export const getWebhooks: RequestHandler = (req, res) => {
 export const createWebhook: RequestHandler = (req, res) => {
   try {
     const webhookData = req.body as CreateWebhookRequest;
-    
+
     // Validate required fields
     if (!webhookData.name || !webhookData.url) {
       const response: WebhookResponse = {
@@ -74,27 +74,41 @@ export const createWebhook: RequestHandler = (req, res) => {
       };
       return res.status(400).json(response);
     }
-    
+
     // Create new webhook
-    const newWebhook: Webhook = {
+    const now = new Date().toISOString();
+    const newWebhookData = {
       id: `wh_${nextWebhookId.toString().padStart(3, '0')}`,
       name: webhookData.name,
       url: webhookData.url,
       isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
       successCount: 0,
       failureCount: 0
     };
-    
+
     nextWebhookId++;
-    webhooks.push(newWebhook);
-    
+    const dbWebhook = WebhookDB.create(newWebhookData);
+
+    // Convert to API format
+    const newWebhook: Webhook = {
+      id: dbWebhook.id,
+      name: dbWebhook.name,
+      url: dbWebhook.url,
+      isActive: dbWebhook.is_active === 1,
+      createdAt: dbWebhook.created_at,
+      updatedAt: dbWebhook.updated_at,
+      lastTriggered: dbWebhook.last_triggered,
+      successCount: dbWebhook.success_count,
+      failureCount: dbWebhook.failure_count
+    };
+
     const response: WebhookResponse = {
       success: true,
       webhook: newWebhook
     };
-    
+
     res.status(201).json(response);
   } catch (error) {
     console.error("Error creating webhook:", error);
