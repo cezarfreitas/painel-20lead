@@ -125,13 +125,26 @@ export const getLeads: RequestHandler = (req, res) => {
  */
 export const createLead: RequestHandler = (req, res) => {
   try {
-    const leadData = req.body as CreateLeadRequest;
-    
+    const leadData = req.body as CreateLeadRequest & {
+      _pixel?: string;
+      _referrer?: string;
+      _url?: string;
+    };
+
     // Validate required fields
-    if (!leadData.name || !leadData.email || !leadData.source) {
+    if (!leadData.name || !leadData.source) {
       const response: CreateLeadResponse = {
         success: false,
-        error: "Nome, email e origem são obrigatórios"
+        error: "Nome e origem são obrigatórios"
+      };
+      return res.status(400).json(response);
+    }
+
+    // Se não tem email mas tem phone, é válido (WhatsApp only)
+    if (!leadData.email && !leadData.phone) {
+      const response: CreateLeadResponse = {
+        success: false,
+        error: "Email ou WhatsApp são obrigatórios"
       };
       return res.status(400).json(response);
     }
