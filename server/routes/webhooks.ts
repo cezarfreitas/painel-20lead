@@ -239,28 +239,49 @@ export const triggerWebhooks = async (lead: Lead): Promise<void> => {
     failureCount: wh.failure_count,
   }));
 
-  const payload: WebhookPayload = {
-    event: "lead.created",
-    timestamp: new Date().toISOString(),
-    data: {
-      leadId: lead.id,
-      phone: lead.phone,
-      source: lead.source,
-      name: lead.name,
-      company: lead.company,
-      message: lead.message,
-      createdAt: lead.createdAt,
-    },
-  };
-
   console.log(
     `Triggering ${activeWebhooks.length} webhooks for lead ${lead.id}`,
   );
 
-  // Trigger all webhooks in parallel
-  const promises = activeWebhooks.map((webhook) =>
-    triggerSingleWebhook(webhook, payload, lead.id),
-  );
+  // Trigger all webhooks in parallel with custom payloads
+  const promises = activeWebhooks.map((webhook) => {
+    // Create dynamic payload based on webhook configuration
+    const baseData = {
+      leadId: lead.id,
+      phone: lead.phone,
+      source: lead.source,
+      name: lead.name,
+      email: lead.email,
+      company: lead.company,
+      message: lead.message,
+      status: lead.status,
+      priority: lead.priority,
+      tags: lead.tags,
+      createdAt: lead.createdAt,
+      ...lead.customData, // Include all custom data
+    };
+
+    // Filter data based on webhook's sendFields configuration
+    let filteredData = baseData;
+    if (webhook.sendFields && webhook.sendFields.length > 0) {
+      filteredData = {};
+      webhook.sendFields.forEach(fieldName => {
+        if (baseData.hasOwnProperty(fieldName)) {
+          filteredData[fieldName] = baseData[fieldName];
+        }
+      });
+      // Always include leadId for tracking
+      filteredData.leadId = lead.id;
+    }
+
+    const payload: WebhookPayload = {
+      event: "lead.created",
+      timestamp: new Date().toISOString(),
+      data: filteredData,
+    };
+
+    return triggerSingleWebhook(webhook, payload, lead.id);
+  });
 
   await Promise.allSettled(promises);
 };
