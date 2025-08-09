@@ -237,14 +237,30 @@ export const resendWebhookForLead: RequestHandler = async (req, res) => {
   try {
     const leadId = req.params.id;
 
-    const lead = leads.find(l => l.id === leadId);
+    const dbLead = LeadDB.getById(leadId);
 
-    if (!lead) {
+    if (!dbLead) {
       return res.status(404).json({
         success: false,
         error: "Lead não encontrado"
       });
     }
+
+    // Convert to API format
+    const lead: Lead = {
+      id: dbLead.id,
+      phone: dbLead.phone,
+      source: dbLead.source,
+      name: dbLead.name,
+      email: dbLead.email,
+      company: dbLead.company,
+      message: dbLead.message,
+      status: dbLead.status,
+      priority: dbLead.priority,
+      createdAt: dbLead.created_at,
+      updatedAt: dbLead.updated_at,
+      tags: dbLead.tags ? JSON.parse(dbLead.tags) : []
+    };
 
     // Trigger webhooks for this specific lead
     await triggerWebhooks(lead);
