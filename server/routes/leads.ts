@@ -122,7 +122,14 @@ export const createLead: RequestHandler = async (req, res) => {
       priority: dbLead.priority,
       createdAt: dbLead.created_at,
       updatedAt: dbLead.updated_at,
-      tags: dbLead.tags ? JSON.parse(dbLead.tags) : []
+      tags: dbLead.tags ? (() => {
+        try {
+          return JSON.parse(dbLead.tags);
+        } catch (e) {
+          console.error('Error parsing tags for lead', dbLead.id, ':', dbLead.tags, e);
+          return [];
+        }
+      })() : []
     };
 
     // Trigger webhooks asynchronously (don't wait for them)
@@ -190,7 +197,14 @@ export const updateLead: RequestHandler = async (req, res) => {
       priority: dbLead.priority,
       createdAt: dbLead.created_at,
       updatedAt: dbLead.updated_at,
-      tags: dbLead.tags ? JSON.parse(dbLead.tags) : []
+      tags: dbLead.tags ? (() => {
+        try {
+          return JSON.parse(dbLead.tags);
+        } catch (e) {
+          console.error('Error parsing tags for lead', dbLead.id, ':', dbLead.tags, e);
+          return [];
+        }
+      })() : []
     };
 
     const response: UpdateLeadResponse = {
@@ -266,7 +280,14 @@ export const resendWebhookForLead: RequestHandler = async (req, res) => {
       priority: dbLead.priority,
       createdAt: dbLead.created_at,
       updatedAt: dbLead.updated_at,
-      tags: dbLead.tags ? JSON.parse(dbLead.tags) : []
+      tags: dbLead.tags ? (() => {
+        try {
+          return JSON.parse(dbLead.tags);
+        } catch (e) {
+          console.error('Error parsing tags for lead', dbLead.id, ':', dbLead.tags, e);
+          return [];
+        }
+      })() : []
     };
 
     // Trigger webhooks for this specific lead
