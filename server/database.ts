@@ -507,7 +507,7 @@ export const WebhookDB = {
       .map((key) => `${key} = ?`)
       .join(", ");
     const values = Object.values(dbUpdates);
-    values.push(new Date().toISOString(), id);
+    values.push(new Date(), id);
 
     await db.execute(
       `UPDATE webhooks SET ${fields}, updated_at = ? WHERE id = ?`,
