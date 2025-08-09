@@ -407,7 +407,10 @@ export const WebhookDB = {
   },
 
   getActive: async () => {
-    const [result] = await db.execute('SELECT * FROM webhooks WHERE is_active = true');
+    if (!isConnected) {
+      return mockWebhooks.filter(wh => wh.is_active);
+    }
+    const [result] = await db.execute('SELECT * FROM webhooks WHERE is_active = 1');
     return result;
   },
 
