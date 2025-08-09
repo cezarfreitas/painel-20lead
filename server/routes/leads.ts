@@ -142,12 +142,12 @@ export const createLead: RequestHandler = async (req, res) => {
 /**
  * PUT /api/leads/:id - Update a lead
  */
-export const updateLead: RequestHandler = (req, res) => {
+export const updateLead: RequestHandler = async (req, res) => {
   try {
     const leadId = req.params.id;
     const updates = req.body as UpdateLeadRequest;
 
-    const existingLead = LeadDB.getById(leadId);
+    const existingLead = await LeadDB.getById(leadId);
 
     if (!existingLead) {
       const response: UpdateLeadResponse = {
@@ -168,7 +168,7 @@ export const updateLead: RequestHandler = (req, res) => {
     if (updates.priority !== undefined) dbUpdates.priority = updates.priority;
     if (updates.tags !== undefined) dbUpdates.tags = JSON.stringify(updates.tags);
 
-    const dbLead = LeadDB.update(leadId, dbUpdates);
+    const dbLead = await LeadDB.update(leadId, dbUpdates);
 
     // Convert back to API format
     const updatedLead: Lead = {
