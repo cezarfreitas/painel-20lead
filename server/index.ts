@@ -32,6 +32,15 @@ export function createServer() {
     res.json({ message: ping });
   });
 
+  // Health check endpoint
+  app.get("/api/health", (_req, res) => {
+    res.json({
+      status: "ok",
+      timestamp: new Date().toISOString(),
+      service: "LeadHub API"
+    });
+  });
+
   app.get("/api/demo", handleDemo);
 
   // Lead management routes
