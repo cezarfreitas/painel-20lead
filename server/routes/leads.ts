@@ -143,8 +143,8 @@ export const createLead: RequestHandler = (req, res) => {
     const newLead: Lead = {
       id: nextId.toString(),
       name: leadData.name,
-      email: leadData.email,
       phone: leadData.phone,
+      email: leadData.email, // opcional
       company: leadData.company,
       message: leadData.message,
       source: leadData.source,
