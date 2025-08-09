@@ -23,9 +23,14 @@ const navigation = [
     icon: BarChart3
   },
   {
-    name: "Leads", 
+    name: "Leads",
     href: "/leads",
     icon: Users
+  },
+  {
+    name: "Pixels",
+    href: "/tracking",
+    icon: FileText
   },
   {
     name: "Relatórios",
@@ -34,7 +39,7 @@ const navigation = [
   },
   {
     name: "Configurações",
-    href: "/settings", 
+    href: "/settings",
     icon: Settings
   }
 ];
