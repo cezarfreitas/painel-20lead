@@ -288,9 +288,8 @@ const triggerSingleWebhook = async (
     
     if (response.ok) {
       // Success
-      webhook.successCount++;
-      webhook.lastTriggered = new Date().toISOString();
-      
+      WebhookDB.incrementSuccess(webhook.id);
+
       const log: WebhookLog = {
         id: logId,
         webhookId: webhook.id,
@@ -303,9 +302,9 @@ const triggerSingleWebhook = async (
         maxAttempts,
         createdAt: new Date().toISOString()
       };
-      
-      webhookLogs.push(log);
-      
+
+      WebhookLogDB.create(log);
+
       console.log(`Webhook ${webhook.id} triggered successfully`);
     } else {
       throw new Error(`HTTP ${response.status}: ${responseText}`);
