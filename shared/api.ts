@@ -33,12 +33,12 @@ export interface Lead {
  * Request body for creating a new lead
  */
 export interface CreateLeadRequest {
-  name: string;
   phone: string; // WhatsApp obrigatório
+  source: string; // Origem obrigatória
+  name?: string; // Nome opcional
   email?: string; // Email opcional
   company?: string;
   message?: string;
-  source: string;
   tags?: string[];
 }
 
