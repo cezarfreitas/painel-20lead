@@ -97,11 +97,47 @@ export default function Leads() {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pt-BR", {
       day: "2-digit",
-      month: "2-digit", 
+      month: "2-digit",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit"
     });
+  };
+
+  const getWebhookStatus = (leadId: string): "success" | "failed" | "pending" => {
+    // Simular status dos webhooks baseado no ID do lead
+    // Em produção, isso viria de uma API que consulta os logs de webhook
+    const leadNum = parseInt(leadId);
+    if (leadNum % 3 === 0) return "failed";
+    if (leadNum % 2 === 0) return "pending";
+    return "success";
+  };
+
+  const resendWebhook = async (leadId: string) => {
+    setResendingLeads(prev => new Set(prev).add(leadId));
+
+    try {
+      // Simular chamada da API para reenviar webhook
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Em produção, faria uma chamada para o endpoint de reenvio:
+      // const response = await fetch(`/api/leads/${leadId}/resend-webhook`, { method: 'POST' });
+
+      console.log(`Webhook reenviado para lead ${leadId}`);
+
+      // Atualizar estado local se necessário
+      // fetchLeads(); // Recarregar lista se necessário
+
+    } catch (error) {
+      console.error("Erro ao reenviar webhook:", error);
+      alert("Erro ao reenviar webhook");
+    } finally {
+      setResendingLeads(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(leadId);
+        return newSet;
+      });
+    }
   };
 
   return (
