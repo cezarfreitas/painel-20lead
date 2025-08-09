@@ -143,12 +143,13 @@ async function insertSampleData() {
     await db.execute(
       `
       INSERT INTO webhooks (id, name, url, is_active, created_at, updated_at, last_triggered, success_count, failure_count)
-      VALUES 
+      VALUES
         ('wh_001', 'Sistema CRM Principal', 'https://api.meucrm.com/webhooks/leads', true, ?, ?, ?, 45, 2),
         ('wh_002', 'Sistema de Email Marketing', 'https://emailmarketing.com/api/contacts', true, ?, ?, ?, 23, 0)
     `,
       [weekAgo, weekAgo, hourAgo, threeDaysAgo, threeDaysAgo, hourAgo],
     );
+    console.log("[WEBHOOK] Sample webhooks inserted successfully");
   }
 }
 
