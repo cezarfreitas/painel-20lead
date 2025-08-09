@@ -110,15 +110,23 @@ export default function Webhooks() {
         body: JSON.stringify({ isActive }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = (await response.json()) as WebhookResponse;
 
       if (data.success && data.webhook) {
         setWebhooks((prev) =>
           prev.map((wh) => (wh.id === webhookId ? data.webhook! : wh)),
         );
+      } else {
+        console.error("Failed to update webhook:", data.error);
+        alert("Erro ao atualizar webhook: " + (data.error || "Erro desconhecido"));
       }
     } catch (error) {
       console.error("Error updating webhook:", error);
+      alert("Erro ao atualizar webhook. Tente novamente.");
     }
   };
 
