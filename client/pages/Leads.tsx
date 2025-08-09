@@ -179,12 +179,10 @@ export default function Leads() {
 
                       <TableCell className="w-[200px]">
                         <div className="space-y-1">
-                          {lead.phone && (
-                            <div className="flex items-center gap-2 text-sm">
-                              <Phone className="h-3 w-3" />
-                              {lead.phone}
-                            </div>
-                          )}
+                          <div className="flex items-center gap-2 text-sm">
+                            <Phone className="h-3 w-3" />
+                            {lead.phone}
+                          </div>
                         </div>
                       </TableCell>
 
