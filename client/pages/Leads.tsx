@@ -117,16 +117,18 @@ export default function Leads() {
     setResendingLeads(prev => new Set(prev).add(leadId));
 
     try {
-      // Simular chamada da API para reenviar webhook
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const response = await fetch(`/api/leads/${leadId}/resend-webhook`, {
+        method: 'POST'
+      });
 
-      // Em produção, faria uma chamada para o endpoint de reenvio:
-      // const response = await fetch(`/api/leads/${leadId}/resend-webhook`, { method: 'POST' });
+      const data = await response.json();
 
-      console.log(`Webhook reenviado para lead ${leadId}`);
-
-      // Atualizar estado local se necessário
-      // fetchLeads(); // Recarregar lista se necessário
+      if (data.success) {
+        console.log(`Webhook reenviado para lead ${leadId}`);
+        // Mostrar feedback de sucesso
+      } else {
+        throw new Error(data.error || "Erro ao reenviar webhook");
+      }
 
     } catch (error) {
       console.error("Erro ao reenviar webhook:", error);
