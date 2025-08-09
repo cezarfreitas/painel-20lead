@@ -71,7 +71,12 @@ export function createServer() {
 
     try {
       await triggerWebhooks(testLead);
-      res.json({ success: true, message: "Webhook test triggered", testLead });
+      res.json({
+        success: true,
+        message: "Webhook test triggered with custom fields",
+        testLead,
+        note: "Verifique os logs para ver o payload enviado para cada webhook"
+      });
     } catch (error) {
       console.error("Error in test webhook:", error);
       res
