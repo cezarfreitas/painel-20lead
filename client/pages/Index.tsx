@@ -261,23 +261,27 @@ export default function Index() {
                 </div>
               </Link>
             </Button>
-            
-            <Button variant="outline" className="justify-start h-auto p-4">
-              <div className="text-left">
-                <div className="font-medium">Configurar Integração</div>
-                <div className="text-sm text-muted-foreground">
-                  Conectar formulários externos
+
+            <Button variant="outline" className="justify-start h-auto p-4" asChild>
+              <Link to="/webhooks">
+                <div className="text-left">
+                  <div className="font-medium">Configurar Webhooks</div>
+                  <div className="text-sm text-muted-foreground">
+                    Integrar com sistemas externos
+                  </div>
                 </div>
-              </div>
+              </Link>
             </Button>
-            
-            <Button variant="outline" className="justify-start h-auto p-4">
-              <div className="text-left">
-                <div className="font-medium">Relatórios</div>
-                <div className="text-sm text-muted-foreground">
-                  Análises e métricas detalhadas
+
+            <Button variant="outline" className="justify-start h-auto p-4" asChild>
+              <Link to="/reports">
+                <div className="text-left">
+                  <div className="font-medium">Relatórios</div>
+                  <div className="text-sm text-muted-foreground">
+                    Análises e métricas detalhadas
+                  </div>
                 </div>
-              </div>
+              </Link>
             </Button>
           </div>
         </CardContent>
