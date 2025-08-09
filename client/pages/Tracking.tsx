@@ -142,8 +142,8 @@ Campos opcionais:
     return `<!-- Exemplo de formulário HTML que envia direto para o endpoint -->
 <form action="${baseUrl}/api/leads" method="POST">
   <input type="hidden" name="source" value="${pixelCode}">
-  <input type="text" name="name" placeholder="Nome" required>
   <input type="tel" name="phone" placeholder="WhatsApp" required>
+  <input type="text" name="name" placeholder="Nome">
   <input type="text" name="company" placeholder="Empresa">
   <textarea name="message" placeholder="Mensagem"></textarea>
   <button type="submit">Enviar Lead</button>
@@ -153,11 +153,11 @@ Campos opcionais:
 <script>
 function enviarLead() {
   var dadosLead = {
-    name: "João Silva",
     phone: "+55 11 99999-9999", // obrigatório
+    source: "${pixelCode}", // obrigatório
+    name: "João Silva", // opcional
     company: "Empresa ABC", // opcional
-    message: "Quero saber mais", // opcional
-    source: "${pixelCode}"
+    message: "Quero saber mais" // opcional
   };
 
   fetch('${baseUrl}/api/leads', {
