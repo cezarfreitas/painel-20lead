@@ -1,0 +1,56 @@
+# LeadHub Production Dockerfile - Robust Version
+FROM node:18-alpine
+
+# Install system dependencies
+RUN apk add --no-cache curl dumb-init
+
+WORKDIR /app
+
+# Copy package files first
+COPY package*.json ./
+
+# Install all dependencies (including dev for build)
+RUN npm install --legacy-peer-deps && npm cache clean --force
+
+# Copy source code
+COPY . .
+
+# Build the application with error checking
+RUN npm run build
+
+# Debug: Show what was built
+RUN echo "=== Build completed ===" && \
+    echo "Contents of /app:" && \
+    ls -la && \
+    echo "Contents of dist:" && \
+    ls -la dist/ 2>/dev/null || echo "No dist directory" && \
+    echo "Contents of dist/server:" && \
+    ls -la dist/server/ 2>/dev/null || echo "No dist/server directory" && \
+    echo "Contents of dist/spa:" && \
+    ls -la dist/spa/ 2>/dev/null || echo "No dist/spa directory"
+
+# Create missing directories if needed
+RUN mkdir -p dist/spa && echo "Created dist/spa directory"
+
+# Clean up after build
+RUN npm prune --production && npm cache clean --force
+
+# Create non-root user
+RUN adduser -D -s /bin/sh appuser && \
+    chown -R appuser:appuser /app
+
+USER appuser
+
+# Environment variables
+ENV NODE_ENV=production
+ENV PORT=80
+
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD curl -f http://localhost:80/api/health || exit 1
+
+# Start application
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["npm", "start"]
