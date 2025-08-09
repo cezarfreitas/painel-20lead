@@ -169,19 +169,6 @@ export default function Leads() {
               />
             </div>
             
-            <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as any)}>
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os Status</SelectItem>
-                <SelectItem value="new">Novo</SelectItem>
-                <SelectItem value="contacted">Contatado</SelectItem>
-                <SelectItem value="qualified">Qualificado</SelectItem>
-                <SelectItem value="converted">Convertido</SelectItem>
-                <SelectItem value="lost">Perdido</SelectItem>
-              </SelectContent>
-            </Select>
 
             <Select value={priorityFilter} onValueChange={(value) => setPriorityFilter(value as any)}>
               <SelectTrigger className="w-full sm:w-[180px]">
