@@ -1,7 +1,7 @@
 import path from "path";
 import { fileURLToPath } from "url";
 import { existsSync } from "fs";
-import { createServer } from "./index";
+import { createServer } from "./index.js";
 import express from "express";
 
 const app = createServer();
