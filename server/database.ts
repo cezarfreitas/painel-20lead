@@ -53,7 +53,8 @@ async function createTables() {
       priority ENUM('low', 'medium', 'high') DEFAULT 'medium',
       created_at DATETIME NOT NULL,
       updated_at DATETIME NOT NULL,
-      tags JSON
+      tags JSON,
+      custom_data JSON
     )
   `);
 
