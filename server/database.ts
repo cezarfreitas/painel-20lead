@@ -489,8 +489,8 @@ export const WebhookDB = {
   create: async (webhook: any) => {
     await db.execute(
       `
-      INSERT INTO webhooks (id, name, url, is_active, created_at, updated_at, success_count, failure_count)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO webhooks (id, name, url, is_active, created_at, updated_at, success_count, failure_count, custom_fields, send_fields)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
       [
         webhook.id,
@@ -501,6 +501,8 @@ export const WebhookDB = {
         new Date(webhook.updatedAt),
         webhook.successCount || 0,
         webhook.failureCount || 0,
+        JSON.stringify(webhook.customFields || []),
+        JSON.stringify(webhook.sendFields || []),
       ],
     );
 
