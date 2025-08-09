@@ -252,11 +252,15 @@ export const LeadDB = {
 
     if (params.limit) {
       query += ' LIMIT ?';
-      values.push(Number(params.limit));
+      const limitValue = Number(params.limit);
+      console.log('LIMIT value:', limitValue, 'type:', typeof limitValue, 'isNaN:', isNaN(limitValue));
+      values.push(limitValue);
 
       if (params.page && params.page > 1) {
         query += ' OFFSET ?';
-        values.push(Number((params.page - 1) * params.limit));
+        const offsetValue = Number((params.page - 1) * params.limit);
+        console.log('OFFSET value:', offsetValue, 'type:', typeof offsetValue, 'isNaN:', isNaN(offsetValue));
+        values.push(offsetValue);
       }
     }
 
