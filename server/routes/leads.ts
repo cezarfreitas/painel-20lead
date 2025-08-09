@@ -42,7 +42,14 @@ export const getLeads: RequestHandler = async (req, res) => {
       priority: lead.priority,
       createdAt: lead.created_at,
       updatedAt: lead.updated_at,
-      tags: lead.tags ? JSON.parse(lead.tags) : []
+      tags: lead.tags ? (() => {
+        try {
+          return JSON.parse(lead.tags);
+        } catch (e) {
+          console.error('Error parsing tags for lead', lead.id, ':', lead.tags, e);
+          return [];
+        }
+      })() : []
     }));
 
     const response: GetLeadsResponse = {
@@ -317,7 +324,14 @@ export const getDashboardStats: RequestHandler = async (req, res) => {
       priority: lead.priority,
       createdAt: lead.created_at,
       updatedAt: lead.updated_at,
-      tags: lead.tags ? JSON.parse(lead.tags) : []
+      tags: lead.tags ? (() => {
+        try {
+          return JSON.parse(lead.tags);
+        } catch (e) {
+          console.error('Error parsing tags for lead', lead.id, ':', lead.tags, e);
+          return [];
+        }
+      })() : []
     }));
 
     const response: DashboardStatsResponse = {
