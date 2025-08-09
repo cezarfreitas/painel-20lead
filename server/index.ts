@@ -42,9 +42,6 @@ export function createServer() {
   // Dashboard routes
   app.get("/api/dashboard/stats", getDashboardStats);
 
-  // Tracking routes
-  app.get("/api/tracking/pageview", trackPageview);
-
   // Webhook routes
   app.get("/api/webhooks", getWebhooks);
   app.post("/api/webhooks", createWebhook);
