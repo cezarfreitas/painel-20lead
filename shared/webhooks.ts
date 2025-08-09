@@ -1,4 +1,15 @@
 /**
+ * Custom field configuration for webhooks
+ */
+export interface WebhookField {
+  name: string;
+  label: string;
+  type: "text" | "number" | "boolean" | "email" | "phone" | "url";
+  required: boolean;
+  defaultValue?: string;
+}
+
+/**
  * Webhook data structure
  */
 export interface Webhook {
@@ -11,6 +22,8 @@ export interface Webhook {
   lastTriggered?: string;
   successCount: number;
   failureCount: number;
+  customFields?: WebhookField[];
+  sendFields?: string[]; // Array of field names to send
 }
 
 /**
