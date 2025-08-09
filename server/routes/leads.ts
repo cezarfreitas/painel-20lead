@@ -1,14 +1,15 @@
 import { RequestHandler } from "express";
-import { 
-  Lead, 
-  CreateLeadRequest, 
-  CreateLeadResponse, 
-  GetLeadsResponse, 
+import {
+  Lead,
+  CreateLeadRequest,
+  CreateLeadResponse,
+  GetLeadsResponse,
   GetLeadsQuery,
   UpdateLeadRequest,
   UpdateLeadResponse,
-  DashboardStatsResponse 
+  DashboardStatsResponse
 } from "@shared/api";
+import { triggerWebhooks } from "./webhooks";
 
 // In-memory storage for leads (in production, use a real database)
 let leads: Lead[] = [
