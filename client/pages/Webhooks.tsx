@@ -178,6 +178,56 @@ export default function Webhooks() {
     });
   };
 
+  // Functions for managing custom fields
+  const addCustomField = () => {
+    setNewWebhook(prev => ({
+      ...prev,
+      customFields: [
+        ...prev.customFields,
+        { name: "", label: "", type: "text", required: false }
+      ]
+    }));
+  };
+
+  const updateCustomField = (index: number, field: Partial<WebhookField>) => {
+    setNewWebhook(prev => ({
+      ...prev,
+      customFields: prev.customFields.map((cf, i) =>
+        i === index ? { ...cf, ...field } : cf
+      )
+    }));
+  };
+
+  const removeCustomField = (index: number) => {
+    setNewWebhook(prev => ({
+      ...prev,
+      customFields: prev.customFields.filter((_, i) => i !== index)
+    }));
+  };
+
+  const toggleSendField = (fieldName: string) => {
+    setNewWebhook(prev => ({
+      ...prev,
+      sendFields: prev.sendFields.includes(fieldName)
+        ? prev.sendFields.filter(f => f !== fieldName)
+        : [...prev.sendFields, fieldName]
+    }));
+  };
+
+  // Available default fields
+  const defaultFields = [
+    { name: "phone", label: "Telefone/WhatsApp" },
+    { name: "source", label: "Origem" },
+    { name: "name", label: "Nome" },
+    { name: "email", label: "Email" },
+    { name: "company", label: "Empresa" },
+    { name: "message", label: "Mensagem" },
+    { name: "status", label: "Status" },
+    { name: "priority", label: "Prioridade" },
+    { name: "tags", label: "Tags" },
+    { name: "createdAt", label: "Data de Criação" }
+  ];
+
   const totalWebhooks = webhooks.length;
   const activeWebhooks = webhooks.filter((wh) => wh.isActive).length;
   const totalSuccess = webhooks.reduce((sum, wh) => sum + wh.successCount, 0);
