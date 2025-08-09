@@ -25,15 +25,18 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { 
-  Search, 
-  MoreHorizontal, 
-  Mail, 
-  Phone, 
-  Building, 
+import {
+  Search,
+  MoreHorizontal,
+  Phone,
   Calendar,
   Filter,
-  ArrowUpDown
+  ArrowUpDown,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Send,
+  Loader2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
