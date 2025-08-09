@@ -2,28 +2,37 @@ import mysql from 'mysql2/promise';
 
 let db: mysql.Connection;
 
+let isConnected = false;
+
 // Initialize MySQL connection
 async function initializeDatabase() {
   try {
     const connectionUrl = process.env.MYSQL_DB || process.env.DATABASE_URL;
-    
+
     if (!connectionUrl) {
-      throw new Error('MYSQL_DB environment variable is required');
+      console.warn('MYSQL_DB environment variable not found, using mock data mode');
+      isConnected = false;
+      return;
     }
 
     console.log('Connecting to MySQL database...');
     db = await mysql.createConnection(connectionUrl);
-    
+
+    // Test connection
+    await db.ping();
+
     console.log('Connected to MySQL database successfully');
+    isConnected = true;
 
     // Create tables
     await createTables();
     await insertSampleData();
-    
+
     console.log('Database initialized successfully');
   } catch (error) {
-    console.error('Failed to initialize database:', error);
-    throw error;
+    console.error('Failed to connect to MySQL database:', error);
+    console.log('Fallback to mock data mode');
+    isConnected = false;
   }
 }
 
