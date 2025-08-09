@@ -65,7 +65,6 @@ export default function Leads() {
       const params = new URLSearchParams();
 
       if (search) params.append("search", search);
-      if (priorityFilter !== "all") params.append("priority", priorityFilter);
 
       const response = await fetch(`/api/leads?${params}`);
 
