@@ -35,6 +35,11 @@ const navigation = [
     icon: Code
   },
   {
+    name: "Webhooks",
+    href: "/webhooks",
+    icon: Webhook
+  },
+  {
     name: "Relatórios",
     href: "/reports",
     icon: FileText
