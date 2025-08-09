@@ -1,6 +1,6 @@
 import path from "path";
-import { fileURLToPath } from 'url';
-import { existsSync } from 'fs';
+import { fileURLToPath } from "url";
+import { existsSync } from "fs";
 import { createServer } from "./index";
 import express from "express";
 
@@ -20,7 +20,7 @@ const possibleSpaPaths = [
   path.join(__dirname, "../../dist/spa"),
   path.join(process.cwd(), "dist/spa"),
   path.join(process.cwd(), "client/dist"),
-  path.join(process.cwd(), "build")
+  path.join(process.cwd(), "build"),
 ];
 
 let spaPath: string | null = null;
@@ -56,23 +56,23 @@ if (spaPath) {
   });
 } else {
   console.log("⚠️ No SPA directory found - running in API-only mode");
-  
+
   // Fallback for missing frontend
   app.get("*", (req, res) => {
     if (req.path.startsWith("/api/")) {
       return res.status(404).json({ error: "API endpoint not found" });
     }
-    
-    res.json({ 
-      message: "LeadHub API is running in API-only mode", 
+
+    res.json({
+      message: "LeadHub API is running in API-only mode",
       api: "/api",
       health: "/api/health",
       endpoints: {
         leads: "/api/leads",
-        webhooks: "/api/webhooks", 
-        dashboard: "/api/dashboard/stats"
+        webhooks: "/api/webhooks",
+        dashboard: "/api/dashboard/stats",
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   });
 }
@@ -82,7 +82,7 @@ app.listen(port, () => {
   console.log(`📱 Frontend: http://localhost:${port}`);
   console.log(`🔧 API: http://localhost:${port}/api`);
   console.log(`💗 Health: http://localhost:${port}/api/health`);
-  
+
   if (spaPath) {
     console.log(`📁 Static files: ${spaPath}`);
   } else {

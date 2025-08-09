@@ -3,7 +3,13 @@ import { WebhookField } from "@shared/webhooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -28,7 +34,7 @@ const defaultFields = [
   { name: "status", label: "Status" },
   { name: "priority", label: "Prioridade" },
   { name: "tags", label: "Tags" },
-  { name: "createdAt", label: "Data de Criação" }
+  { name: "createdAt", label: "Data de Criação" },
 ];
 
 const fieldTypes = [
@@ -37,7 +43,7 @@ const fieldTypes = [
   { value: "email", label: "Email" },
   { value: "phone", label: "Telefone" },
   { value: "url", label: "URL" },
-  { value: "boolean", label: "Sim/Não" }
+  { value: "boolean", label: "Sim/Não" },
 ];
 
 export default function WebhookFieldsConfig({
@@ -46,11 +52,14 @@ export default function WebhookFieldsConfig({
   onAddCustomField,
   onUpdateCustomField,
   onRemoveCustomField,
-  onToggleSendField
+  onToggleSendField,
 }: WebhookFieldsConfigProps) {
   const allFields = [
     ...defaultFields,
-    ...customFields.map(cf => ({ name: cf.name, label: cf.label || cf.name }))
+    ...customFields.map((cf) => ({
+      name: cf.name,
+      label: cf.label || cf.name,
+    })),
   ];
 
   return (
@@ -64,7 +73,9 @@ export default function WebhookFieldsConfig({
         <TabsContent value="send-fields" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">Selecionar Campos para Enviar</CardTitle>
+              <CardTitle className="text-sm">
+                Selecionar Campos para Enviar
+              </CardTitle>
               <p className="text-xs text-muted-foreground">
                 Escolha quais campos serão incluídos no payload do webhook
               </p>
@@ -107,10 +118,13 @@ export default function WebhookFieldsConfig({
                       <X className="h-4 w-4" />
                     </Button>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <Label htmlFor={`field-name-${index}`} className="text-xs">
+                      <Label
+                        htmlFor={`field-name-${index}`}
+                        className="text-xs"
+                      >
                         Nome do Campo
                       </Label>
                       <Input
@@ -122,9 +136,12 @@ export default function WebhookFieldsConfig({
                         }
                       />
                     </div>
-                    
+
                     <div>
-                      <Label htmlFor={`field-label-${index}`} className="text-xs">
+                      <Label
+                        htmlFor={`field-label-${index}`}
+                        className="text-xs"
+                      >
                         Rótulo
                       </Label>
                       <Input
@@ -140,7 +157,10 @@ export default function WebhookFieldsConfig({
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <Label htmlFor={`field-type-${index}`} className="text-xs">
+                      <Label
+                        htmlFor={`field-type-${index}`}
+                        className="text-xs"
+                      >
                         Tipo
                       </Label>
                       <Select
@@ -170,7 +190,10 @@ export default function WebhookFieldsConfig({
                           onUpdateCustomField(index, { required: !!checked })
                         }
                       />
-                      <Label htmlFor={`field-required-${index}`} className="text-xs">
+                      <Label
+                        htmlFor={`field-required-${index}`}
+                        className="text-xs"
+                      >
                         Obrigatório
                       </Label>
                     </div>
@@ -178,7 +201,10 @@ export default function WebhookFieldsConfig({
 
                   {field.type !== "boolean" && (
                     <div>
-                      <Label htmlFor={`field-default-${index}`} className="text-xs">
+                      <Label
+                        htmlFor={`field-default-${index}`}
+                        className="text-xs"
+                      >
                         Valor Padrão (opcional)
                       </Label>
                       <Input
@@ -186,7 +212,9 @@ export default function WebhookFieldsConfig({
                         placeholder="Valor padrão"
                         value={field.defaultValue || ""}
                         onChange={(e) =>
-                          onUpdateCustomField(index, { defaultValue: e.target.value })
+                          onUpdateCustomField(index, {
+                            defaultValue: e.target.value,
+                          })
                         }
                       />
                     </div>

@@ -6,13 +6,13 @@ const app = createServer();
 const port = process.env.PORT || 3000;
 
 // In production, serve the built SPA files
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const distPath = path.join(__dirname, "../spa");
 
 // Check if spa directory exists
-import { existsSync } from 'fs';
+import { existsSync } from "fs";
 
 if (existsSync(distPath)) {
   console.log(`📁 Serving static files from: ${distPath}`);
@@ -42,7 +42,7 @@ if (existsSync(distPath)) {
       message: "LeadHub API is running",
       api: `/api`,
       health: `/api/health`,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   });
 }

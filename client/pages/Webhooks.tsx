@@ -28,7 +28,13 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -56,7 +62,7 @@ export default function Webhooks() {
     name: "",
     url: "",
     customFields: [] as WebhookField[],
-    sendFields: [] as string[]
+    sendFields: [] as string[],
   });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -112,7 +118,7 @@ export default function Webhooks() {
           name: "",
           url: "",
           customFields: [],
-          sendFields: []
+          sendFields: [],
         });
         setIsDialogOpen(false);
       } else {
@@ -144,7 +150,9 @@ export default function Webhooks() {
         );
       } else {
         console.error("Failed to update webhook:", data.error);
-        alert("Erro ao atualizar webhook: " + (data.error || "Erro desconhecido"));
+        alert(
+          "Erro ao atualizar webhook: " + (data.error || "Erro desconhecido"),
+        );
       }
     } catch (error) {
       console.error("Error updating webhook:", error);
@@ -180,37 +188,37 @@ export default function Webhooks() {
 
   // Functions for managing custom fields
   const addCustomField = () => {
-    setNewWebhook(prev => ({
+    setNewWebhook((prev) => ({
       ...prev,
       customFields: [
         ...prev.customFields,
-        { name: "", label: "", type: "text", required: false }
-      ]
+        { name: "", label: "", type: "text", required: false },
+      ],
     }));
   };
 
   const updateCustomField = (index: number, field: Partial<WebhookField>) => {
-    setNewWebhook(prev => ({
+    setNewWebhook((prev) => ({
       ...prev,
       customFields: prev.customFields.map((cf, i) =>
-        i === index ? { ...cf, ...field } : cf
-      )
+        i === index ? { ...cf, ...field } : cf,
+      ),
     }));
   };
 
   const removeCustomField = (index: number) => {
-    setNewWebhook(prev => ({
+    setNewWebhook((prev) => ({
       ...prev,
-      customFields: prev.customFields.filter((_, i) => i !== index)
+      customFields: prev.customFields.filter((_, i) => i !== index),
     }));
   };
 
   const toggleSendField = (fieldName: string) => {
-    setNewWebhook(prev => ({
+    setNewWebhook((prev) => ({
       ...prev,
       sendFields: prev.sendFields.includes(fieldName)
-        ? prev.sendFields.filter(f => f !== fieldName)
-        : [...prev.sendFields, fieldName]
+        ? prev.sendFields.filter((f) => f !== fieldName)
+        : [...prev.sendFields, fieldName],
     }));
   };
 
@@ -225,7 +233,7 @@ export default function Webhooks() {
     { name: "status", label: "Status" },
     { name: "priority", label: "Prioridade" },
     { name: "tags", label: "Tags" },
-    { name: "createdAt", label: "Data de Criação" }
+    { name: "createdAt", label: "Data de Criação" },
   ];
 
   const totalWebhooks = webhooks.length;

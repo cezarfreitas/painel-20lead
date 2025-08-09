@@ -65,8 +65,8 @@ export function createServer() {
         funcionarios: 100,
         website: "https://testcompany.com",
         origem_campanha: "google-ads",
-        valor_contrato: 50000
-      }
+        valor_contrato: 50000,
+      },
     };
 
     try {
@@ -75,16 +75,14 @@ export function createServer() {
         success: true,
         message: "Webhook test triggered with custom fields",
         testLead,
-        note: "Verifique os logs para ver o payload enviado para cada webhook"
+        note: "Verifique os logs para ver o payload enviado para cada webhook",
       });
     } catch (error) {
       console.error("Error in test webhook:", error);
-      res
-        .status(500)
-        .json({
-          success: false,
-          error: error instanceof Error ? error.message : String(error),
-        });
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   });
 

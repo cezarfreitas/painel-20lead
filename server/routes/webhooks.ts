@@ -106,8 +106,12 @@ export const createWebhook: RequestHandler = async (req, res) => {
       lastTriggered: dbWebhook.last_triggered,
       successCount: dbWebhook.success_count,
       failureCount: dbWebhook.failure_count,
-      customFields: dbWebhook.custom_fields ? JSON.parse(dbWebhook.custom_fields) : [],
-      sendFields: dbWebhook.send_fields ? JSON.parse(dbWebhook.send_fields) : [],
+      customFields: dbWebhook.custom_fields
+        ? JSON.parse(dbWebhook.custom_fields)
+        : [],
+      sendFields: dbWebhook.send_fields
+        ? JSON.parse(dbWebhook.send_fields)
+        : [],
     };
 
     const response: WebhookResponse = {
@@ -271,7 +275,7 @@ export const triggerWebhooks = async (lead: Lead): Promise<void> => {
     let filteredData = baseData;
     if (webhook.sendFields && webhook.sendFields.length > 0) {
       filteredData = {};
-      webhook.sendFields.forEach(fieldName => {
+      webhook.sendFields.forEach((fieldName) => {
         if (baseData.hasOwnProperty(fieldName)) {
           filteredData[fieldName] = baseData[fieldName];
         }
