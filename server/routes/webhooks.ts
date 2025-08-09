@@ -346,14 +346,11 @@ const triggerSingleWebhook = async (
  */
 export const getWebhookLogs: RequestHandler = (req, res) => {
   try {
-    // Sort by most recent first and limit to last 100
-    const sortedLogs = webhookLogs
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, 100);
-    
+    const logs = WebhookLogDB.getRecent(100);
+
     res.json({
       success: true,
-      logs: sortedLogs
+      logs: logs
     });
   } catch (error) {
     console.error("Error getting webhook logs:", error);
