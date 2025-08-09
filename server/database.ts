@@ -93,8 +93,38 @@ async function createTables() {
   `);
 }
 
+// Clean up corrupted tags data
+async function cleanupCorruptedTags() {
+  try {
+    // Get all leads with corrupted tags (should be JSON arrays but are strings)
+    const [leads] = await db.execute('SELECT id, tags FROM leads WHERE tags IS NOT NULL') as any;
+
+    for (const lead of leads) {
+      if (lead.tags && typeof lead.tags === 'string' && !lead.tags.startsWith('[')) {
+        // This is a corrupted tag (comma-separated string)
+        let fixedTags = '[]';
+
+        if (lead.tags.includes(',')) {
+          const tagArray = lead.tags.split(',').map((tag: string) => tag.trim());
+          fixedTags = JSON.stringify(tagArray);
+        } else if (lead.tags.length > 0) {
+          fixedTags = JSON.stringify([lead.tags]);
+        }
+
+        await db.execute('UPDATE leads SET tags = ? WHERE id = ?', [fixedTags, lead.id]);
+        console.log(`Fixed tags for lead ${lead.id}: ${lead.tags} -> ${fixedTags}`);
+      }
+    }
+  } catch (error) {
+    console.error('Error cleaning up corrupted tags:', error);
+  }
+}
+
 // Insert sample data if tables are empty
 async function insertSampleData() {
+  // First clean up any corrupted data
+  await cleanupCorruptedTags();
+
   const [leadsResult] = (await db.execute(
     "SELECT COUNT(*) as count FROM leads",
   )) as any;
