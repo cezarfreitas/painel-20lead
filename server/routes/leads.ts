@@ -81,25 +81,42 @@ export const createLead: RequestHandler = (req, res) => {
       };
       return res.status(400).json(response);
     }
-    
+
     // Create new lead
-    const newLead: Lead = {
+    const now = new Date().toISOString();
+    const newLeadData = {
       id: nextId.toString(),
       phone: leadData.phone,
       source: leadData.source,
-      name: leadData.name, // opcional
-      email: leadData.email, // opcional
+      name: leadData.name,
+      email: leadData.email,
       company: leadData.company,
       message: leadData.message,
       status: "new",
       priority: "medium",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
       tags: leadData.tags || []
     };
-    
+
     nextId++;
-    leads.push(newLead);
+    const dbLead = LeadDB.create(newLeadData);
+
+    // Convert back to API format
+    const newLead: Lead = {
+      id: dbLead.id,
+      phone: dbLead.phone,
+      source: dbLead.source,
+      name: dbLead.name,
+      email: dbLead.email,
+      company: dbLead.company,
+      message: dbLead.message,
+      status: dbLead.status,
+      priority: dbLead.priority,
+      createdAt: dbLead.created_at,
+      updatedAt: dbLead.updated_at,
+      tags: dbLead.tags ? JSON.parse(dbLead.tags) : []
+    };
 
     // Trigger webhooks asynchronously (don't wait for them)
     triggerWebhooks(newLead).catch(error => {
