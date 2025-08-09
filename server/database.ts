@@ -252,11 +252,11 @@ export const LeadDB = {
 
     if (params.limit) {
       query += ' LIMIT ?';
-      values.push(params.limit);
+      values.push(Number(params.limit));
 
       if (params.page && params.page > 1) {
         query += ' OFFSET ?';
-        values.push((params.page - 1) * params.limit);
+        values.push(Number((params.page - 1) * params.limit));
       }
     }
 
