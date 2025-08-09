@@ -205,11 +205,11 @@ export const updateLead: RequestHandler = async (req, res) => {
 /**
  * DELETE /api/leads/:id - Delete a lead
  */
-export const deleteLead: RequestHandler = (req, res) => {
+export const deleteLead: RequestHandler = async (req, res) => {
   try {
     const leadId = req.params.id;
 
-    const existingLead = LeadDB.getById(leadId);
+    const existingLead = await LeadDB.getById(leadId);
 
     if (!existingLead) {
       return res.status(404).json({
@@ -218,7 +218,7 @@ export const deleteLead: RequestHandler = (req, res) => {
       });
     }
 
-    LeadDB.delete(leadId);
+    await LeadDB.delete(leadId);
 
     res.json({ success: true });
   } catch (error) {
