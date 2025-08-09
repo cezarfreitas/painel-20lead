@@ -16,10 +16,10 @@
     "build:client": "vite build",
     "build:server": "vite build --config vite.config.server.ts",
     "start": "npx tsx server/simple-production.ts",
-    "start:alt": "node server/start-production.mjs",
+    "start:alt": "node server/basic-server.mjs",
+    "start:basic": "node server/basic-server.mjs",
     "start:robust": "node server/start-production.mjs",
     "start:full": "npx tsx server/production.ts",
-    "start:built": "node dist/server/production.mjs",
     "test": "vitest --run",
     "format.fix": "prettier --write .",
     "typecheck": "tsc"
