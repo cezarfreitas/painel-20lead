@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  leadhub:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - MYSQL_DB=mysql://leadhub:leadhub_password@mysql:3306/leadhub
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - leadhub-network
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: leadhub
+      MYSQL_USER: leadhub
+      MYSQL_PASSWORD: leadhub_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - leadhub-network
+
+volumes:
+  mysql_data:
+
+networks:
+  leadhub-network:
+    driver: bridge
