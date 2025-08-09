@@ -89,14 +89,14 @@ export const createWebhook: RequestHandler = async (req, res) => {
     };
 
     nextWebhookId++;
-    const dbWebhook = WebhookDB.create(newWebhookData);
+    const dbWebhook = await WebhookDB.create(newWebhookData);
 
     // Convert to API format
     const newWebhook: Webhook = {
       id: dbWebhook.id,
       name: dbWebhook.name,
       url: dbWebhook.url,
-      isActive: dbWebhook.is_active === 1,
+      isActive: dbWebhook.is_active === 1 || dbWebhook.is_active === true,
       createdAt: dbWebhook.created_at,
       updatedAt: dbWebhook.updated_at,
       lastTriggered: dbWebhook.last_triggered,
