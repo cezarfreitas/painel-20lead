@@ -134,6 +134,7 @@ async function insertSampleData() {
 
   if (webhooksResult[0].count === 0) {
     console.log("Inserting sample webhooks...");
+    console.log("[WEBHOOK] No existing webhooks found, creating sample webhooks");
 
     const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
