@@ -86,14 +86,20 @@ export const getLeads: RequestHandler = async (req, res) => {
  */
 export const createLead: RequestHandler = async (req, res) => {
   try {
+    console.log("🔍 [CREATE LEAD] Request body:", JSON.stringify(req.body, null, 2));
+
     const leadData = req.body as CreateLeadRequest;
 
     // Map incoming fields to standard format
     const whatsapp = leadData.whatsapp || leadData.phone;
     const source = leadData.source || leadData.origem || "website";
 
+    console.log("📱 [CREATE LEAD] Mapped whatsapp:", whatsapp);
+    console.log("📍 [CREATE LEAD] Mapped source:", source);
+
     // Validate required fields - only whatsapp is required
     if (!whatsapp) {
+      console.log("❌ [CREATE LEAD] WhatsApp missing");
       const response: CreateLeadResponse = {
         success: false,
         error: "WhatsApp é obrigatório",
