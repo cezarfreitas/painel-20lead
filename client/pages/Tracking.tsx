@@ -129,11 +129,10 @@ Content-Type: application/json
 
 Campos obrigatórios:
 - name: string (nome do lead)
+- phone: string (WhatsApp do lead)
 - source: string (use "${pixelCode}" para identificar este site)
 
 Campos opcionais:
-- phone: string (WhatsApp)
-- email: string (email do lead)
 - company: string (empresa)
 - message: string (mensagem)`;
   };
