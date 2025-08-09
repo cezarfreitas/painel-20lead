@@ -1,140 +1,233 @@
-# Deploy LeadHub
+# Deploy LeadHub em Produção
 
-## Docker Deployment
+## 🚀 Opções de Deploy
 
-### Opção 1: Docker Compose (Recomendado para desenvolvimento)
-
-```bash
-# Construir e executar com MySQL incluído
-docker-compose up -d
-
-# Ver logs
-docker-compose logs -f
-
-# Parar
-docker-compose down
-```
-
-### Opção 2: Docker Build Manual
+### Opção 1: Deploy Rápido (Recomendado)
 
 ```bash
-# Construir a imagem
-docker build -t leadhub .
+# 1. Construir para produção
+chmod +x build-production.sh
+./build-production.sh
 
-# Executar (com MySQL externo)
+# 2. Executar em produção
 docker run -d \
-  --name leadhub \
+  --name leadhub-prod \
   -p 80:80 \
   -e MYSQL_DB="mysql://user:pass@host:3306/database" \
-  leadhub
+  --restart unless-stopped \
+  leadhub:latest
 ```
 
-### Opção 3: Deploy em Produção
-
-#### Variáveis de Ambiente Obrigatórias
+### Opção 2: Docker Compose Produção
 
 ```bash
-# String de conexão MySQL
-MYSQL_DB=mysql://username:password@host:3306/database_name
+# 1. Configurar variáveis
+cp .env.production .env
+# Editar .env com suas configurações
 
-# Opcional
-NODE_ENV=production
-PORT=80
+# 2. Deploy com MySQL e Nginx
+docker-compose -f docker-compose.prod.yml up -d
+
+# 3. Ver logs
+docker-compose -f docker-compose.prod.yml logs -f
 ```
 
-#### Deploy em Cloud Providers
+### Opção 3: Cloud Deploy
 
-**Fly.io:**
+#### Fly.io
 ```bash
-fly launch
+# Configurar fly.toml
+fly launch --dockerfile
 fly deploy
 ```
 
-**Railway:**
+#### Railway
 ```bash
 railway login
 railway link
 railway up
 ```
 
-**DigitalOcean App Platform:**
-- Upload o código para GitHub
-- Criar novo App
-- Configurar variáveis de ambiente
-- Deploy automático
+#### DigitalOcean App Platform
+1. Conectar repositório GitHub
+2. Configurar Dockerfile build
+3. Adicionar variáveis de ambiente
+4. Deploy automático
 
-**Heroku:**
+## 🔧 Configuração Obrigatória
+
+### Variáveis de Ambiente
+
 ```bash
-heroku create leadhub-app
-heroku addons:create cleardb:ignite
-heroku config:set MYSQL_DB=$(heroku config:get CLEARDB_DATABASE_URL)
-git push heroku main
+# Database (OBRIGATÓRIO)
+MYSQL_DB=mysql://username:password@host:3306/database_name
+
+# Servidor
+NODE_ENV=production
+PORT=80
 ```
 
-## Configuração de Banco de Dados
+### Exemplos de String de Conexão
 
-### Providers Recomendados
-
-**Desenvolvimento/Teste:**
-- MySQL via Docker Compose (incluído)
-- XAMPP/WAMP local
-
-**Produção:**
-- PlanetScale (recomendado)
-- Amazon RDS
-- Google Cloud SQL  
-- DigitalOcean Managed Databases
-- ClearDB (Heroku)
-
-### String de Conexão
-
-```
-mysql://[username]:[password]@[host]:[port]/[database]?ssl=true
-```
-
-Exemplos:
 ```bash
-# PlanetScale
+# PlanetScale (Recomendado)
 MYSQL_DB="mysql://user:pass@aws.connect.psdb.cloud/leadhub?ssl=true&sslaccept=strict"
 
 # Amazon RDS
 MYSQL_DB="mysql://admin:password@leadhub.cluster-xyz.us-east-1.rds.amazonaws.com:3306/leadhub?ssl=true"
 
-# Local
-MYSQL_DB="mysql://root:password@localhost:3306/leadhub"
+# DigitalOcean Managed Database
+MYSQL_DB="mysql://user:pass@db-mysql-leadhub-do-user-123456-0.db.ondigitalocean.com:25060/leadhub?ssl=true"
+
+# Google Cloud SQL
+MYSQL_DB="mysql://user:pass@34.123.45.67:3306/leadhub?ssl=true"
 ```
 
-## Estrutura de Arquivos
+## 🛡️ Segurança em Produção
 
+### SSL/HTTPS (nginx incluído)
+```bash
+# Gerar certificados SSL (Let's Encrypt)
+certbot --nginx -d yourdomain.com
+
+# Ou usar certificados existentes
+cp your-cert.pem ssl/cert.pem
+cp your-key.pem ssl/key.pem
 ```
-leadhub/
-├── Dockerfile              # Imagem de produção
-├── docker-compose.yml      # Desenvolvimento local
-├── .dockerignore           # Arquivos ignorados no build
-├── server/                 # Backend Express
-├── client/                 # Frontend React
-├── shared/                 # Tipos compartilhados
-└── dist/                   # Build de produção (gerado)
+
+### Firewall
+```bash
+# Permitir apenas portas necessárias
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw allow 22/tcp
+ufw enable
 ```
 
-## Verificações de Deploy
+## 📊 Monitoramento
 
-1. **Health Check**: `GET /api/health`
-2. **Database**: Sistema funciona em modo fallback se MySQL indisponível
-3. **Logs**: Monitor logs para erros de conexão
-4. **Performance**: App otimizada para produção
+### Health Check
+```bash
+curl http://localhost/api/health
+# Resposta: {"status":"ok","timestamp":"...","service":"LeadHub API"}
+```
 
-## Troubleshooting
+### Logs de Produção
+```bash
+# Docker logs
+docker logs leadhub-prod -f
+
+# Docker Compose logs
+docker-compose -f docker-compose.prod.yml logs -f
+
+# Logs específicos
+docker-compose -f docker-compose.prod.yml logs leadhub
+```
+
+### Métricas
+```bash
+# Status dos containers
+docker ps
+
+# Uso de recursos
+docker stats
+
+# Espaço em disco
+docker system df
+```
+
+## 🔄 Backup e Manutenção
+
+### Backup do MySQL
+```bash
+# Backup automático
+docker exec mysql mysqldump -u leadhub -p leadhub > backup_$(date +%Y%m%d_%H%M%S).sql
+
+# Restore
+docker exec -i mysql mysql -u leadhub -p leadhub < backup.sql
+```
+
+### Atualizações
+```bash
+# 1. Rebuild image
+docker build -t leadhub:latest .
+
+# 2. Stop container
+docker stop leadhub-prod
+
+# 3. Remove old container
+docker rm leadhub-prod
+
+# 4. Start new container
+docker run -d \
+  --name leadhub-prod \
+  -p 80:80 \
+  -e MYSQL_DB="..." \
+  --restart unless-stopped \
+  leadhub:latest
+```
+
+## 🚨 Troubleshooting
+
+### Problemas Comuns
 
 **Erro de Conexão MySQL:**
 - Verificar string de conexão
-- Confirmar credenciais
-- Testar conectividade de rede
+- Testar conectividade: `telnet host 3306`
+- Verificar permissões do usuário
 
-**Build Falha:**
-- Verificar versão Node.js (18+)
-- Limpar cache npm: `npm clean-install`
+**Container não inicia:**
+- Ver logs: `docker logs leadhub-prod`
+- Verificar variáveis de ambiente
+- Verificar porta disponível: `netstat -ln | grep :80`
 
-**App não inicia:**
-- Verificar PORT (padrão 8080)
-- Ver logs: `docker logs leadhub`
+**Performance lenta:**
+- Verificar recursos: `docker stats`
+- Otimizar MySQL: adicionar índices
+- Usar Redis para cache (futuro)
+
+### Logs de Debug
+```bash
+# Habilitar logs detalhados
+docker run -e DEBUG=* leadhub:latest
+
+# Logs do sistema
+journalctl -u docker.service -f
+```
+
+## 📈 Otimizações para Produção
+
+### Performance
+- Use PlanetScale ou RDS para MySQL
+- Configure CDN para assets estáticos
+- Implemente cache Redis (opcional)
+- Use load balancer para múltiplas instâncias
+
+### Escalabilidade
+```bash
+# Múltiplas instâncias
+docker-compose -f docker-compose.prod.yml up --scale leadhub=3
+```
+
+### Monitoramento Avançado
+- Sentry para error tracking
+- New Relic ou DataDog para APM
+- Grafana + Prometheus para métricas
+
+## 🔗 URLs Importantes
+
+- **Health Check**: `http://localhost/api/health`
+- **Admin Dashboard**: `http://localhost/`
+- **API Documentation**: `http://localhost/api/`
+- **MySQL Port**: `3306` (se exposto)
+
+## ✅ Checklist de Deploy
+
+- [ ] Variáveis de ambiente configuradas
+- [ ] MySQL database criado e acessível
+- [ ] SSL certificados instalados (para HTTPS)
+- [ ] Firewall configurado
+- [ ] Backup strategy definida
+- [ ] Monitoring configurado
+- [ ] DNS apontando para servidor
+- [ ] Health check funcionando
