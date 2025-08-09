@@ -41,6 +41,34 @@ export function createServer() {
     });
   });
 
+  // Test webhook endpoint
+  app.post("/api/test-webhook", async (_req, res) => {
+    const { triggerWebhooks } = await import("./routes/webhooks");
+
+    const testLead = {
+      id: "test_" + Date.now(),
+      phone: "+55 11 99999-9999",
+      source: "test",
+      name: "Teste Webhook",
+      email: "teste@example.com",
+      company: "Test Company",
+      message: "Testando webhook",
+      status: "new" as const,
+      priority: "medium" as const,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      tags: ["test"]
+    };
+
+    try {
+      await triggerWebhooks(testLead);
+      res.json({ success: true, message: "Webhook test triggered", testLead });
+    } catch (error) {
+      console.error("Error in test webhook:", error);
+      res.status(500).json({ success: false, error: error instanceof Error ? error.message : String(error) });
+    }
+  });
+
   app.get("/api/demo", handleDemo);
 
   // Lead management routes
