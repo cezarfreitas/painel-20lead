@@ -1,17 +1,17 @@
 # LeadHub Production Dockerfile
 FROM node:18-alpine
 
-# Set working directory
-WORKDIR /app
-
 # Install system dependencies
 RUN apk add --no-cache dumb-init curl
 
-# Copy package files
+# Set working directory
+WORKDIR /app
+
+# Copy package files first (for better caching)
 COPY package*.json ./
 
-# Install all dependencies (needed for build)
-RUN npm ci && npm cache clean --force
+# Install all dependencies (including dev dependencies for build)
+RUN npm install && npm cache clean --force
 
 # Copy source code
 COPY . .
@@ -20,14 +20,12 @@ COPY . .
 RUN npm run build
 
 # Remove dev dependencies after build
-RUN npm prune --omit=dev
+RUN npm prune --production && npm cache clean --force
 
 # Create non-root user
 RUN addgroup -g 1001 -S appuser && \
-    adduser -S -u 1001 -G appuser appuser
-
-# Change ownership
-RUN chown -R appuser:appuser /app
+    adduser -S -u 1001 -G appuser appuser && \
+    chown -R appuser:appuser /app
 
 # Switch to non-root user
 USER appuser
