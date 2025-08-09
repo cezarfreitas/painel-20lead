@@ -88,6 +88,8 @@ export const createWebhook: RequestHandler = async (req, res) => {
       updatedAt: now,
       successCount: 0,
       failureCount: 0,
+      customFields: webhookData.customFields || [],
+      sendFields: webhookData.sendFields || [],
     };
 
     nextWebhookId++;
