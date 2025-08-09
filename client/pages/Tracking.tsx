@@ -377,28 +377,28 @@ function enviarLead() {
                           <div className="space-y-4">
                             <div>
                               <div className="flex items-center justify-between mb-2">
-                                <Label>1. Código do Pixel (adicione no &lt;head&gt; do site)</Label>
-                                <Button 
-                                  variant="outline" 
+                                <Label>1. Informações do Endpoint</Label>
+                                <Button
+                                  variant="outline"
                                   size="sm"
-                                  onClick={() => copyToClipboard(generateTrackingScript(pixel.pixelCode))}
+                                  onClick={() => copyToClipboard(generateEndpointInfo(pixel.pixelCode))}
                                 >
                                   <Copy className="h-4 w-4 mr-2" />
                                   Copiar
                                 </Button>
                               </div>
                               <Textarea
-                                value={generateTrackingScript(pixel.pixelCode)}
+                                value={generateEndpointInfo(pixel.pixelCode)}
                                 readOnly
-                                className="font-mono text-xs h-32"
+                                className="font-mono text-xs h-40"
                               />
                             </div>
-                            
+
                             <div>
                               <div className="flex items-center justify-between mb-2">
-                                <Label>2. Exemplo de Formulário com Tracking</Label>
-                                <Button 
-                                  variant="outline" 
+                                <Label>2. Exemplos de Como Enviar Leads</Label>
+                                <Button
+                                  variant="outline"
                                   size="sm"
                                   onClick={() => copyToClipboard(generateFormExample(pixel.pixelCode))}
                                 >
@@ -409,7 +409,7 @@ function enviarLead() {
                               <Textarea
                                 value={generateFormExample(pixel.pixelCode)}
                                 readOnly
-                                className="font-mono text-xs h-64"
+                                className="font-mono text-xs h-96"
                               />
                             </div>
                           </div>
