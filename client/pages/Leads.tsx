@@ -89,27 +89,6 @@ export default function Leads() {
   };
 
 
-  const updateLeadPriority = async (leadId: string, priority: Lead["priority"]) => {
-    try {
-      const updates: UpdateLeadRequest = { priority };
-      const response = await fetch(`/api/leads/${leadId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updates)
-      });
-      
-      const data = (await response.json()) as UpdateLeadResponse;
-      
-      if (data.success) {
-        // Update local state
-        setLeads(prev => prev.map(lead => 
-          lead.id === leadId ? { ...lead, priority, updatedAt: new Date().toISOString() } : lead
-        ));
-      }
-    } catch (error) {
-      console.error("Error updating lead:", error);
-    }
-  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pt-BR", {
