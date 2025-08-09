@@ -41,6 +41,8 @@ export interface CreateLeadRequest {
   company?: string;
   message?: string;
   tags?: string[];
+  customData?: Record<string, any>; // For dynamic custom fields
+  [key: string]: any; // Allow any additional fields
 }
 
 /**
