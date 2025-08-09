@@ -453,7 +453,7 @@ function enviarLead() {
               <div>
                 <h3 className="font-semibold">Envie os dados obrigatórios</h3>
                 <p className="text-sm text-muted-foreground">
-                  Nome, WhatsApp/Email e source (código do pixel) são obrigatórios
+                  Nome, WhatsApp e source (código do pixel) são obrigatórios
                 </p>
               </div>
             </div>
