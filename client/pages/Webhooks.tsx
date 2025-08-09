@@ -87,6 +87,10 @@ export default function Webhooks() {
         body: JSON.stringify(webhookData),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = (await response.json()) as WebhookResponse;
 
       if (data.success && data.webhook) {
@@ -94,7 +98,7 @@ export default function Webhooks() {
         setNewWebhook({ name: "", url: "" });
         setIsDialogOpen(false);
       } else {
-        alert("Erro ao criar webhook: " + data.error);
+        alert("Erro ao criar webhook: " + (data.error || "Erro desconhecido"));
       }
     } catch (error) {
       console.error("Error creating webhook:", error);
