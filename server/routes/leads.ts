@@ -69,7 +69,7 @@ export const getLeads: RequestHandler = async (req, res) => {
 /**
  * POST /api/leads - Create a new lead
  */
-export const createLead: RequestHandler = (req, res) => {
+export const createLead: RequestHandler = async (req, res) => {
   try {
     const leadData = req.body as CreateLeadRequest;
 
@@ -100,7 +100,7 @@ export const createLead: RequestHandler = (req, res) => {
     };
 
     nextId++;
-    const dbLead = LeadDB.create(newLeadData);
+    const dbLead = await LeadDB.create(newLeadData);
 
     // Convert back to API format
     const newLead: Lead = {
