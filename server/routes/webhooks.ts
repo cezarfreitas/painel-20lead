@@ -312,9 +312,9 @@ const triggerSingleWebhook = async (
     
   } catch (error) {
     console.error(`Webhook ${webhook.id} failed (attempt ${attempt}):`, error);
-    
-    webhook.failureCount++;
-    
+
+    WebhookDB.incrementFailure(webhook.id);
+
     const log: WebhookLog = {
       id: logId,
       webhookId: webhook.id,
@@ -326,18 +326,18 @@ const triggerSingleWebhook = async (
       maxAttempts,
       createdAt: new Date().toISOString()
     };
-    
+
     if (attempt < maxAttempts) {
       // Schedule retry
       const retryDelay = Math.pow(2, attempt) * 1000; // Exponential backoff
       log.nextRetry = new Date(Date.now() + retryDelay).toISOString();
-      
+
       setTimeout(() => {
         triggerSingleWebhook(webhook, payload, leadId, attempt + 1, maxAttempts);
       }, retryDelay);
     }
-    
-    webhookLogs.push(log);
+
+    WebhookLogDB.create(log);
   }
 };
 
