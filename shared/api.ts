@@ -17,8 +17,8 @@ export interface DemoResponse {
 export interface Lead {
   id: string;
   name: string;
-  email: string;
-  phone?: string;
+  phone: string; // WhatsApp obrigatório
+  email?: string; // Email opcional
   company?: string;
   message?: string;
   source: string; // Which page/form the lead came from
