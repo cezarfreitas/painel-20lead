@@ -133,6 +133,77 @@ async function insertSampleData() {
   }
 }
 
+// Mock data for fallback
+let mockLeads: any[] = [
+  {
+    id: "1",
+    phone: "+55 11 99999-9999",
+    source: "landing-page-produtos",
+    name: "João Silva",
+    company: "Tech Solutions Ltd",
+    message: "Interessado em saber mais sobre os serviços",
+    status: "new",
+    priority: "high",
+    created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    tags: JSON.stringify(["produto", "premium"])
+  },
+  {
+    id: "2",
+    phone: "+55 21 88888-8888",
+    source: "formulario-contato",
+    name: "Maria Santos",
+    company: "Inovação & Co",
+    message: "Gostaria de agendar uma demonstração",
+    status: "contacted",
+    priority: "medium",
+    created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    tags: JSON.stringify(["demo", "empresarial"])
+  },
+  {
+    id: "3",
+    phone: "+55 11 99999-9999",
+    source: "webinar-growth",
+    name: "Pedro Costa",
+    company: "StartupXYZ",
+    message: "Preciso de uma solução escalável",
+    status: "qualified",
+    priority: "high",
+    created_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+    tags: JSON.stringify(["startup", "growth"])
+  }
+];
+
+let mockWebhooks: any[] = [
+  {
+    id: "wh_001",
+    name: "Sistema CRM Principal",
+    url: "https://api.meucrm.com/webhooks/leads",
+    is_active: true,
+    created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    last_triggered: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
+    success_count: 45,
+    failure_count: 2
+  },
+  {
+    id: "wh_002",
+    name: "Sistema de Email Marketing",
+    url: "https://emailmarketing.com/api/contacts",
+    is_active: true,
+    created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    last_triggered: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
+    success_count: 23,
+    failure_count: 0
+  }
+];
+
+let mockLogs: any[] = [];
+let nextMockId = 4;
+
 // Database operations for leads
 export const LeadDB = {
   getAll: async (params: { search?: string; page?: number; limit?: number }) => {
